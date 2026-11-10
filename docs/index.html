@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>sovereign-m — the open-source home of M</title>
+  <meta name="description" content="sovereign-m is the open-source home of M. The full system is not public yet. Today's public checkout is a local-first demo: cited memory, single-job bots, and a paper-only trading desk. Paper trading only, no real money, not financial advice.">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <img class="shield" src="assets/shield.svg" width="96" height="120" alt="M shield">
+      <h1>sovereign-m</h1>
+      <p class="tag">The open-source home of M. Today's demo: cited memory, one job per bot, paper trading only.</p>
+    </header>
+    <p class="notice"><strong>Paper trading only, no real money, not financial advice.</strong> The desk reads a synthetic tape. No order leaves the process.</p>
+    <h2>What M is</h2>
+    <p class="lead">sovereign-m is the open-source home of M. More parts are added as they are open-sourced. The full system is not public yet. Today's public checkout is a small local-first demo of a personal agent stack. You can read the code, run it on your own computer, and copy the shape. The notes, the bots, and the sample tape are fiction. The program runs offline. Runtime dependencies are the Python standard library.</p>
+    <div class="actions">
+      <a class="btn p" href="pages/setup.html">Set up your own M</a>
+      <a class="btn s" href="https://github.com/hodlmateo/m-lite">View the code on GitHub</a>
+    </div>
+    <h2>Features</h2>
+    <p>This is what is in today's public demo. It is not the full M system.</p>
+    <ul>
+      <li><strong>Cited memory.</strong> Answers come from local sample notes and list their sources. A miss is visible.</li>
+      <li><strong>One job per bot.</strong> Each fictional bot has a single job, and work it must refuse.</li>
+      <li><strong>An approval gate.</strong> New notes stay staged until a person approves the merge. Nothing in the gate approves itself.</li>
+      <li><strong>A paper-only desk.</strong> A synthetic tape, a set of roles, and rules that can veto an entry. Paper trading only.</li>
+    </ul>
+    <h2>Quick start</h2>
+    <p>These commands are from the current public README and run today's demo. Use them from the project folder after a checkout. The clone step and a plain-language walkthrough are on the <a href="pages/setup.html">Set up your own M</a> page.</p>
+    <pre>pip install -e .
+python -m mlite prove
+python -m mlite "when do we water the fern"
+python -m mlite desk run</pre>
+    <footer>
+      <p>Built by Vanhorn SI · <a href="https://vanhornsi.com">vanhornsi.com</a></p>
+      <nav class="social" aria-label="Vanhorn SI on the web">
+        <a href="https://github.com/hodlmateo/sovereign-m">GitHub</a>
+        <a href="https://x.com/MateoVanhorn">X</a>
+        <a href="https://www.youtube.com/@vanhorn-si">YouTube</a>
+        <a href="https://www.tiktok.com/@vanhornsi">TikTok</a>
+        <a href="https://vanhornsi.substack.com">Substack</a>
+        <a href="https://request.vanhornsi.com">Contact</a>
+        <a href="mailto:vanhornsi@pm.me">Email</a>
+      </nav>
+      <p class="tiny">Draft site page, not published. MIT license. Paper trading demos are paper only.</p>
+    </footer>
+  </div>
+</body>
+</html>
