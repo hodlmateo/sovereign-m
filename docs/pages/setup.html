@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Set up your own M — sovereign-m</title>
+  <meta name="description" content="A plain-language guide to running today's public demo of M, at sovereign-m. Paper trading only, no real money, not financial advice.">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <img class="shield" src="../assets/shield.svg" width="96" height="120" alt="M shield">
+      <h1>Set up your own M</h1>
+      <p class="tag">A plain-language guide to today's public demo of M.</p>
+    </header>
+    <p class="notice"><strong>Paper trading only, no real money, not financial advice.</strong></p>
+    <p class="lead">This walkthrough is for people who want to try M on a computer they own. It uses only steps and requirements that are in the current public README or project files (the repo is still hodlmateo/m-lite until a gate-2 rename). Where the README is silent, the gap is marked <span class="confirm">see README (to confirm)</span>.</p>
+
+    <h2>1. What you need</h2>
+    <ul>
+      <li><strong>A PC.</strong> A regular computer is enough to try the demo. A GPU can help if you later use a local model runner; the CPU will work, it is just slower. The files in today's public repo do not list a GPU requirement; this is general guidance.</li>
+      <li><strong>Python 3.11 or newer.</strong> That version floor is in the project's own pyproject file. The README does not say how to install Python on each operating system — <span class="confirm">see README (to confirm)</span> if a preferred installer is added later.</li>
+      <li><strong>Ollama, or another local model runner, is optional.</strong> The README says the demo commands run offline on the Python standard library and do not need a model. If an <code>ollama</code> program is on your PATH, or <code>OLLAMA_HOST</code> is set, the demo may use it to reorder notes and rephrase a cited sentence. A miss still stays a miss. <code>--no-ollama</code> skips the model.</li>
+    </ul>
+
+    <h2>2. Install</h2>
+    <p>The public README does not start with a clone step. The first command below is the obvious way to copy the public repo. The install line after it is from the README.</p>
+    <ol>
+      <li>Copy the public project onto your computer:
+        <pre>git clone https://github.com/hodlmateo/m-lite.git</pre>
+        Then open the <code>m-lite</code> folder you just copied. (Not listed in the README; obvious first step. The folder name matches today's public repo, which is still m-lite until a gate-2 rename.)</li>
+      <li>From that folder, install the program the way the README shows:
+        <pre>pip install -e .</pre>
+        This also makes the same program available as the <code>ask-m</code> command.</li>
+      <li>Optional, also from the README: if you want to run the tests, install the dev extras and run pytest:
+        <pre>pip install -e ".[dev]"
+python -m pytest</pre>
+      </li>
+      <li>Any other install step (for example a virtual environment) is not in the README — <span class="confirm">see README (to confirm)</span>.</li>
+    </ol>
+
+    <h2>3. First run</h2>
+    <p>From the project folder, the README's first demo command checks that the pieces work and prints PASS or FAIL:</p>
+    <pre>python -m mlite prove</pre>
+    <p>After the install step, the same program is also available as:</p>
+    <pre>ask-m prove</pre>
+    <p>Then try a question the sample notes can answer (this example is from the README):</p>
+    <pre>python -m mlite "when do we water the fern"</pre>
+    <p>To walk the paper desk on the bundled synthetic tape:</p>
+    <pre>python -m mlite desk run</pre>
+    <p class="note">The desk prints a paper-trading warning first. It does not send an order.</p>
+
+    <h2>4. Use your own memory and bots</h2>
+    <p>This section follows the public file layout. Where the README does not spell out a swap procedure, the gap is marked.</p>
+    <ul>
+      <li><strong>Memory the demo already reads.</strong> The README says <code>ask</code> reads markdown under <code>data/notes/</code> and a SQLite seed in <code>data/sample_notes.sql</code>. Putting your own markdown notes in <code>data/notes/</code> is the folder the program already uses. How to retire or replace the sample notes safely is <span class="confirm">see README (to confirm)</span>.</li>
+      <li><strong>The documented way to add a new note.</strong> The README's approval gate stages an import, lists the queue, and merges only after a person approves it. Until that approve step, a question about the new note returns "I don't know." The commands in the README look like this (the title and body are samples from the README; use your own text):
+        <pre>python -m mlite gate stage --title "Your title" --body "Your note."
+python -m mlite gate list
+python -m mlite gate approve ID</pre>
+        Replace <code>ID</code> with the id shown by <code>gate list</code>. <code>reject</code> drops an item instead.</li>
+      <li><strong>Where approved imports live.</strong> The README says approved imports are read from the local workspace, and that the queue lives in <code>var/</code> (gitignored). The code also allows an <code>MLITE_WORKSPACE</code> override so a demo can run without writing into the checkout. The exact file layout inside that workspace is <span class="confirm">see README (to confirm)</span>.</li>
+      <li><strong>Bots.</strong> The bots are listed in <code>data/registry.json</code>. Each entry has an <code>id</code>, a one-line <code>job</code>, <code>anti_jobs</code> (work that bot must refuse), and <code>hints</code>. A <code>threshold</code> sits at the top of the file. Editing that file is the place the demo keeps this list. Whether the program reloads it on its own, and whether you should replace the sample bots or add to them, is <span class="confirm">see README (to confirm)</span>.</li>
+    </ul>
+
+    <div class="help">
+      <p><strong>Need help? Vanhorn SI can set it up for you.</strong></p>
+      <p><a class="btn p" href="https://request.vanhornsi.com">Request help</a></p>
+    </div>
+
+    <p class="note back"><a href="../index.html">Back to the sovereign-m overview</a> · <a href="https://github.com/hodlmateo/m-lite">Public repo</a> (still m-lite until a gate-2 rename)</p>
+    <footer>
+      <p>Built by Vanhorn SI · <a href="https://vanhornsi.com">vanhornsi.com</a></p>
+      <nav class="social" aria-label="Vanhorn SI on the web">
+        <a href="https://github.com/hodlmateo/sovereign-m">GitHub</a>
+        <a href="https://x.com/MateoVanhorn">X</a>
+        <a href="https://www.youtube.com/@vanhorn-si">YouTube</a>
+        <a href="https://www.tiktok.com/@vanhornsi">TikTok</a>
+        <a href="https://vanhornsi.substack.com">Substack</a>
+        <a href="https://request.vanhornsi.com">Contact</a>
+        <a href="mailto:vanhornsi@pm.me">Email</a>
+      </nav>
+      <p class="tiny">Draft site page, not published. Paper trading demos are paper only. Not financial advice.</p>
+    </footer>
+  </div>
+</body>
+</html>
