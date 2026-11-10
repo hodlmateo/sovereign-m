@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 230 300" role="img" aria-label="M shield">
+  <title>M</title>
+  <path d="M15,12 H215 V155 L115,288 L15,155 Z" fill="#0b2a55" stroke="#2ec4c9" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M36,34 H194 V155 L115,264 L36,155 Z" fill="none" stroke="#2ec4c9" stroke-width="3"/>
+  <text x="115" y="175" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="150" font-weight="700" fill="#2ec4c9">M</text>
+</svg>
