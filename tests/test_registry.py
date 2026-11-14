@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from mlite.registry.router import RegistryError, format_route, load_registry, route
+from sovereign_m.registry.router import RegistryError, format_route, load_registry, route
 
 
 def test_each_bot_has_one_job_and_anti_jobs(data_dir: Path):

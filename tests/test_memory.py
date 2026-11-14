@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from mlite.memory.corpus import Chunk, load_chunks
-from mlite.memory.ollama import Ollama, loopback_base
-from mlite.memory.retrieve import answer_from, ask, format_answer
+from sovereign_m.memory.corpus import Chunk, load_chunks
+from sovereign_m.memory.ollama import Ollama, loopback_base
+from sovereign_m.memory.retrieve import answer_from, ask, format_answer
 
 
 def test_markdown_note_is_quoted_and_cited(data_dir: Path):
@@ -168,7 +168,7 @@ def test_model_is_not_asked_to_phrase_a_miss(data_dir: Path):
 
 def test_from_env_stays_off_without_a_daemon(monkeypatch):
     monkeypatch.delenv("OLLAMA_HOST", raising=False)
-    monkeypatch.setattr("mlite.memory.ollama.shutil.which", lambda name: None)
+    monkeypatch.setattr("sovereign_m.memory.ollama.shutil.which", lambda name: None)
     client = Ollama.from_env()
     assert client.host == ""
     assert client.embed("fern") is None
@@ -178,7 +178,7 @@ def test_from_env_stays_off_without_a_daemon(monkeypatch):
 def test_ollama_source_has_no_address_literal():
     import re
 
-    text = Path("mlite/memory/ollama.py").read_text(encoding="utf-8")
+    text = Path("sovereign_m/memory/ollama.py").read_text(encoding="utf-8")
     assert re.search(r"\b\d{1,3}(?:\.\d{1,3}){3}\b", text) is None
 
 

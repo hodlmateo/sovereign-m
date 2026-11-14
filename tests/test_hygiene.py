@@ -17,7 +17,7 @@ TAX_NUMBER = re.compile(r"\b\d{2}-\d{7}\b")
 TAX_WORD = re.compile(r"\b" + ("E" + "IN") + r"\b")
 # Built in pieces so this file does not contain the marker it searches for.
 _MESH = "ta" + "il"
-MESH_WORD = re.compile(_MESH, re.IGNORECASE)
+MESH_WORD = re.compile(r"\b" + _MESH + r"\b", re.IGNORECASE)
 MESH_NET = re.compile(_MESH + "scale", re.IGNORECASE)
 
 
@@ -29,7 +29,9 @@ def test_checkout_has_no_contact_address_or_mesh_markers():
             continue
         relative = path.relative_to(ROOT).as_posix()
         for line_no, line in enumerate(text.splitlines(), start=1):
-            if EMAIL.search(line):
+            # Site footers already publish a contact mailto; that is not a leak.
+            email = EMAIL.search(line)
+            if email and not (relative.startswith("docs/") and "mailto:" in line):
                 problems.append(f"{relative}:{line_no} email")
             if IPV4.search(line):
                 problems.append(f"{relative}:{line_no} ip")

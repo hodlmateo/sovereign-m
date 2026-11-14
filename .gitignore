@@ -219,5 +219,5 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# m-lite local workspace: staged imports and approved notes
+# sovereign-m local workspace: staged imports and approved notes
 var/

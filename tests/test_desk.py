@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from mlite.desk.engine import DISCLAIMER, PaperDesk, format_trace
-from mlite.desk.tape import Bar, load_bars, load_script
+from sovereign_m.desk.engine import DISCLAIMER, PaperDesk, format_trace
+from sovereign_m.desk.tape import Bar, load_bars, load_script
 
 
 def test_disclaimer_is_the_required_notice():
@@ -223,7 +223,7 @@ def test_fresh_read_rejects_an_unknown_bar(data_dir: Path):
 
 def test_desk_has_no_network_imports():
     banned = {"socket", "http", "urllib", "requests", "httpx", "aiohttp"}
-    root = Path("mlite/desk")
+    root = Path("sovereign_m/desk")
     for path in root.rglob("*.py"):
         text = path.read_text(encoding="utf-8")
         assert "http://" not in text

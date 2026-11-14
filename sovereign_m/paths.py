@@ -12,7 +12,7 @@ def repo_root() -> Path:
         if (candidate / "data" / "registry.json").is_file():
             return candidate
     raise FileNotFoundError(
-        "data/registry.json not found. Run m-lite from a checkout of the repo."
+        "data/registry.json not found. Run sovereign-m from a checkout of the repo."
     )
 
 
@@ -23,10 +23,10 @@ def data_dir() -> Path:
 def workspace_dir() -> Path:
     """Local queue and approved imports. Gitignored. Created on first use.
 
-    ``MLITE_WORKSPACE`` overrides the directory so a demo can run without
+    ``SOVEREIGN_M_WORKSPACE`` overrides the directory so a demo can run without
     writing into the checkout.
     """
-    override = os.environ.get("MLITE_WORKSPACE", "").strip()
+    override = os.environ.get("SOVEREIGN_M_WORKSPACE", "").strip()
     if override:
         return Path(override)
     return repo_root() / "var"

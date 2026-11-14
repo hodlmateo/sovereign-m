@@ -3,8 +3,8 @@ from pathlib import Path
 
 import pytest
 
-from mlite.gate.queue import Gate, GateError
-from mlite.memory.retrieve import ask
+from sovereign_m.gate.queue import Gate, GateError
+from sovereign_m.memory.retrieve import ask
 
 
 def test_stage_does_not_merge(data_dir: Path, tmp_path: Path):

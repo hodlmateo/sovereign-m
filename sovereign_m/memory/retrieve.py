@@ -15,9 +15,9 @@ from collections import Counter
 from dataclasses import dataclass, replace
 from pathlib import Path
 
-from mlite.memory.corpus import Chunk, load_chunks
-from mlite.memory.ollama import Ollama
-from mlite.text import lexemes, words
+from sovereign_m.memory.corpus import Chunk, load_chunks
+from sovereign_m.memory.ollama import Ollama
+from sovereign_m.text import lexemes, words
 
 TOP_K = 3
 COVERAGE = 0.34

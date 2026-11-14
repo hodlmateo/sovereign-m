@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from mlite.desk.tape import Bar
+from sovereign_m.desk.tape import Bar
 
 SMA_WINDOW = 3
 CHASE_LIMIT = 0.035
