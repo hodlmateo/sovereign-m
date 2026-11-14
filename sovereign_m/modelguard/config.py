@@ -13,6 +13,11 @@ DEFAULTS: dict[str, Any] = {
         "relative_change_flag": 0.15,
         "concentration_flag": 6.0,
         "top_row_share_flag": 0.45,
+        "neuron_count_flag": 16,
+        "neuron_share_flag": 0.5,
+        "neuron_top_k": 16,
+        "depth_weighting": True,
+        "late_layer_weight": 1.5,
     },
     "probe": {
         "endpoint": "",
@@ -37,6 +42,13 @@ def default_probes_path() -> Path | None:
     from sovereign_m.paths import data_dir
 
     path = data_dir() / "modelguard" / "probes.yaml"
+    return path if path.is_file() else None
+
+
+def default_cmdguard_path() -> Path | None:
+    from sovereign_m.paths import data_dir
+
+    path = data_dir() / "modelguard" / "cmdguard.yaml"
     return path if path.is_file() else None
 
 

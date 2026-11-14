@@ -17,6 +17,8 @@ import struct
 from pathlib import Path
 from typing import Any, Iterable
 
+from sovereign_m.modelguard.neurons import DEFAULT_NEURON_FLAGS, format_neuron_report, score_neurons
+
 try:
     import numpy as _np
 except ImportError:  # pragma: no cover - exercised when numpy is absent
@@ -30,6 +32,7 @@ DEFAULT_FLAGS = {
     "relative_change_flag": 0.15,
     "concentration_flag": 6.0,
     "top_row_share_flag": 0.45,
+    **DEFAULT_NEURON_FLAGS,
 }
 
 
@@ -80,16 +83,21 @@ def diff_tensors(
         tensors.append(row)
         if reasons:
             flagged.append(name)
+    neurons = score_neurons(base, candidate, flags=settings)
+    flagged.extend(f"neuron:{name}" for name in neurons.get("flagged") or [])
     return {
         "ok": not flagged,
         "flagged": flagged,
         "tensors": tensors,
+        "neurons": neurons,
         "flags": settings,
         "summary": {
             "compared": sum(1 for item in tensors if item["status"] == "compared"),
             "flagged": len(flagged),
             "added": sum(1 for item in tensors if item["status"] == "added"),
             "removed": sum(1 for item in tensors if item["status"] == "removed"),
+            "neuron_layers": neurons.get("summary", {}).get("layers", 0),
+            "neuron_flagged": neurons.get("summary", {}).get("flagged", 0),
         },
     }
 
@@ -120,6 +128,9 @@ def format_report(result: dict[str, Any]) -> str:
             f"conc={item['concentration']:.2f}  "
             f"top={item['top_row_share']:.3f}  {reasons}"
         )
+    if result.get("neurons") and result["neurons"].get("layers"):
+        lines.append("")
+        lines.append(format_neuron_report(result["neurons"]))
     return "\n".join(lines)
 
 

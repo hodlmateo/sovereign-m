@@ -16,6 +16,7 @@ from typing import Any, Callable
 
 from sovereign_m.modelguard import yaml_lite
 from sovereign_m.modelguard.config import default_probes_path, load_config
+from sovereign_m.modelguard.payloads import new_payloads
 
 PostFn = Callable[[str, dict[str, Any], float], dict[str, Any] | None]
 
@@ -63,7 +64,12 @@ def run_probes(
             "model": model,
             "baseline_user": baseline_user,
             "probes": [
-                {"id": item["id"], "kind": item.get("kind", ""), "user": _user(item, baseline_user)}
+                {
+                    "id": item["id"],
+                    "kind": item.get("kind", ""),
+                    "user": _user(item, baseline_user),
+                    "system": item.get("system") or system,
+                }
                 for item in probes
             ],
         }
@@ -76,21 +82,27 @@ def run_probes(
     flagged = []
     for item in probes:
         user = _user(item, baseline_user)
-        text = _complete(post, kind, model, system, user)
+        sys_prompt = str(item.get("system") or system)
+        text = _complete(post, kind, model, sys_prompt, user, timeout)
         overlap = _overlap(baseline_text, text)
         hit = _hit(item, text)
-        # Flag if the reply changes a lot, or if a configured marker appears.
+        payloads = new_payloads(text, baseline_text)
+        # Flag if the reply changes a lot, a marker appears, or a shell-like
+        # payload shows up that the baseline did not have.
         reasons = []
         if overlap < change_flag:
             reasons.append("changed")
         if hit:
             reasons.append("marker")
+        if payloads:
+            reasons.append("shell-payload")
         row = {
             "id": item["id"],
             "kind": item.get("kind", ""),
             "overlap": overlap,
             "flagged": bool(reasons),
             "reasons": reasons,
+            "payloads": payloads,
             "baseline": baseline_text,
             "reply": text,
         }

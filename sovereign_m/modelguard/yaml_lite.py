@@ -117,7 +117,10 @@ def _scalar(text: str) -> Any:
     if text in {"false", "False", "no"}:
         return False
     if len(text) >= 2 and text[0] == text[-1] and text[0] in {"'", '"'}:
-        return text[1:-1]
+        body = text[1:-1]
+        if text[0] == '"':
+            return _unescape_double(body)
+        return body
     if text.startswith("0") and text not in {"0"} and not text.startswith("0."):
         return text
     try:
@@ -126,3 +129,18 @@ def _scalar(text: str) -> Any:
         return int(text)
     except ValueError:
         return text
+
+
+def _unescape_double(body: str) -> str:
+    out: list[str] = []
+    index = 0
+    while index < len(body):
+        if body[index] == '\\' and index + 1 < len(body):
+            nxt = body[index + 1]
+            mapping = {'n': '\n', 't': '\t', '\\': '\\', '"': '"'}
+            out.append(mapping.get(nxt, nxt))
+            index += 2
+        else:
+            out.append(body[index])
+            index += 1
+    return ''.join(out)
