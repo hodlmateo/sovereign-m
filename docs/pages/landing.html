@@ -37,6 +37,15 @@ footer .social a{color:var(--teal)}
 .sample{margin:32px 0 0}
 .sample h2{margin-bottom:8px}
 .sample .caption{color:var(--dim);font-size:.9em;text-align:center;max-width:640px;margin:0 auto 18px}
+
+.sample h3{color:#fff;margin:10px 0 14px;font-size:1.05em;text-align:center;font-weight:600}
+.site-shots{display:grid;grid-template-columns:1fr;gap:16px;margin:0 0 28px;align-items:start}
+.site-shots figure{margin:0}
+.site-shots button{display:block;width:100%;padding:0;border:1px solid var(--border);border-radius:10px;background:#061428;cursor:pointer;overflow:hidden}
+.site-shots button:hover,.site-shots button:focus-visible{border-color:var(--teal);outline:2px solid var(--teal);outline-offset:2px}
+.site-shots img{display:block;width:100%;height:auto}
+.site-shots figcaption{color:var(--dim);font-size:.85em;text-align:center;margin:8px 0 0;line-height:1.4}
+.site-shots .phone{max-width:280px;width:100%;margin-left:auto;margin-right:auto}
 .gallery{display:grid;grid-template-columns:1fr;gap:12px}
 .gallery button{display:block;width:100%;padding:0;border:1px solid var(--border);border-radius:10px;background:var(--card);cursor:pointer;overflow:hidden}
 .gallery button:hover,.gallery button:focus-visible{border-color:var(--teal);outline:2px solid var(--teal);outline-offset:2px}
@@ -55,6 +64,8 @@ footer .social a{color:var(--teal)}
 }
 @media (min-width:800px){
   .gallery{grid-template-columns:1fr 1fr 1fr}
+  .site-shots{grid-template-columns:1.15fr 1.15fr .7fr}
+  .site-shots .phone{max-width:none}
 }
   </style>
 </head>
@@ -88,6 +99,27 @@ footer .social a{color:var(--teal)}
     </div>
     <section class="sample" aria-labelledby="vsi-heading">
       <h2 id="vsi-heading">Sample build: VSI Framing</h2>
+      <h3>The landing page we designed</h3>
+      <div class="site-shots">
+        <figure>
+          <button type="button" data-full="../assets/vsi-framing/site/home-desktop.webp" aria-label="Enlarge: Home page">
+            <img src="../assets/vsi-framing/site/home-desktop.webp" alt="VSI Framing home page with the headline Frame it your way" width="1280" height="800" loading="lazy">
+          </button>
+          <figcaption>Home page</figcaption>
+        </figure>
+        <figure>
+          <button type="button" data-full="../assets/vsi-framing/site/builder-desktop.webp" aria-label="Enlarge: Start Framing builder">
+            <img src="../assets/vsi-framing/site/builder-desktop.webp" alt="VSI Framing Start Framing builder, with a live preview and finish options" width="1280" height="800" loading="lazy">
+          </button>
+          <figcaption>Start Framing builder: upload, size, frame, mat, glass, live price</figcaption>
+        </figure>
+        <figure class="phone">
+          <button type="button" data-full="../assets/vsi-framing/site/home-mobile.webp" aria-label="Enlarge: Phone view">
+            <img src="../assets/vsi-framing/site/home-mobile.webp" alt="VSI Framing home page on a phone" width="390" height="844" loading="lazy">
+          </button>
+          <figcaption>Phone view</figcaption>
+        </figure>
+      </div>
       <p class="caption">Sample site build by Vanhorn SI. Images are AI-generated.</p>
       <div class="gallery">
         <button type="button" data-full="../assets/vsi-framing/hero.webp" aria-label="Enlarge: A framing workbench with walnut frame corners and a mat cutter">
@@ -165,7 +197,7 @@ footer .social a{color:var(--teal)}
       if (lastFocus && lastFocus.focus) lastFocus.focus();
     }
 
-    document.querySelectorAll(".gallery button").forEach(function (btn) {
+    document.querySelectorAll(".sample button[data-full]").forEach(function (btn) {
       btn.addEventListener("click", function () {
         var shot = btn.querySelector("img");
         openBox(btn.getAttribute("data-full") || shot.src, shot.alt);
