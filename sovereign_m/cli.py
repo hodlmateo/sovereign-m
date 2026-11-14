@@ -25,6 +25,8 @@ ask-m: local sample memory, bot routing, a paper desk, and an approval gate.
   ask-m gate approve ID
   ask-m gate reject ID
   ask-m prove
+  ask-m modelguard demo
+  ask-m modelguard lock|verify|diff|probe ...
 
 Add --no-ollama to skip a local model even if one is installed.
 Paper trading demo, not financial advice.
@@ -41,6 +43,9 @@ def main(argv: list[str] | None = None) -> int:
             print(USAGE)
             return 2
         return prove()
+    if args[0] == "modelguard":
+        from sovereign_m.modelguard.cli import main as modelguard_main
+        return modelguard_main(args[1:])
     if args[0] == "--who":
         task = " ".join(args[1:]).strip()
         if not task:

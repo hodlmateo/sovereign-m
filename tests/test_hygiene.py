@@ -19,6 +19,10 @@ TAX_WORD = re.compile(r"\b" + ("E" + "IN") + r"\b")
 _MESH = "ta" + "il"
 MESH_WORD = re.compile(r"\b" + _MESH + r"\b", re.IGNORECASE)
 MESH_NET = re.compile(_MESH + "scale", re.IGNORECASE)
+# User home paths (built in pieces so examples stay generic).
+HOME_UNIX = re.compile(r"/ho" + r"me/" + r"[A-Za-z0-9._-]+")
+HOME_MAC = re.compile(r"/Us" + r"ers/" + r"[A-Za-z0-9._-]+")
+HOME_TILDE = re.compile(r"~/" + r"[A-Za-z0-9._/-]+")
 
 
 def test_checkout_has_no_contact_address_or_mesh_markers():
@@ -39,6 +43,8 @@ def test_checkout_has_no_contact_address_or_mesh_markers():
                 problems.append(f"{relative}:{line_no} tax-id")
             if MESH_NET.search(line) or MESH_WORD.search(line):
                 problems.append(f"{relative}:{line_no} mesh-word")
+            if HOME_UNIX.search(line) or HOME_MAC.search(line) or HOME_TILDE.search(line):
+                problems.append(f"{relative}:{line_no} home-path")
     assert problems == []
 
 
