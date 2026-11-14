@@ -14,6 +14,7 @@ python -m pytest
 python -m sovereign_m "when do we water the fern"
 python -m sovereign_m --who "draft and revise the markdown note"
 python -m sovereign_m desk run
+python -m sovereign_m.modelguard demo
 ```
 
 `python -m pytest` needs pytest (`pip install -e ".[dev]"`). The demo commands do not.
@@ -193,6 +194,25 @@ bar 13  exit   time exit  pnl 1.40  cooldown off  [trend=yes skeptic=yes sizer=3
 paper chips 10000.00 -> 10000.10
 ```
 
+### Model guard (weights and triggers)
+
+`sovereign_m.modelguard` is a small toolkit you can copy: record file and
+listing digests, diff two weight maps for concentrated row edits, and probe
+an endpoint with date, keyword, and error-string triggers. numpy is
+optional. The synthetic demo uses only the standard library.
+
+A November 2026 write-up on weight-space backdoors is the starting point.
+Claims in that write-up about Microsoft Research and a technique named
+Lazarus are UNVERIFIED. A digest match or a clean diff is not a proof of
+safety. See `docs/modelguard.md`.
+
+```bash
+python -m sovereign_m.modelguard demo
+python -m sovereign_m.modelguard probe --dry-run
+python -m sovereign_m modelguard lock path/to/weights.safetensors --out models.lock
+```
+
+
 ## Where the patterns live
 
 - One job and anti-jobs: `data/registry.json`, `sovereign_m/registry/router.py`
@@ -202,6 +222,7 @@ paper chips 10000.00 -> 10000.10
 - Approval gate: `sovereign_m/gate/queue.py`
 - The tour: `sovereign_m/prove.py`
 - Commands: `sovereign_m/cli.py`
+- Model guard: `sovereign_m/modelguard/`, `data/modelguard/`, `docs/modelguard.md`
 
 ## Left out on purpose
 
