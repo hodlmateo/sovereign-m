@@ -26,7 +26,7 @@ ask-m: local sample memory, bot routing, a paper desk, and an approval gate.
   ask-m gate reject ID
   ask-m prove
   ask-m modelguard demo
-  ask-m modelguard lock|verify|diff|probe ...
+  ask-m modelguard lock|verify|diff|probe|cmdguard ...
 
 Add --no-ollama to skip a local model even if one is installed.
 Paper trading demo, not financial advice.

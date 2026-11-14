@@ -7,6 +7,15 @@ diff:
   relative_change_flag: 0.15
   concentration_flag: 6.0
   top_row_share_flag: 0.45
+  # Neuron mode (MLP up/gate rows + down columns of the same index).
+  # Flag when at most neuron_count_flag neurons hold at least
+  # neuron_share_flag of that layer's change. Late layers can use a
+  # lower effective share threshold when depth_weighting is true.
+  neuron_count_flag: 16
+  neuron_share_flag: 0.5
+  neuron_top_k: 16
+  depth_weighting: true
+  late_layer_weight: 1.5
 
 probe:
   endpoint: ""

@@ -6,6 +6,7 @@ import json
 import sys
 from pathlib import Path
 
+from sovereign_m.modelguard.cmdguard import format_decision, load_policy, review
 from sovereign_m.modelguard.config import load_config
 from sovereign_m.modelguard.demo import format_demo, run as run_demo
 from sovereign_m.modelguard.diff import diff_tensors, format_report as format_diff, load_weights
@@ -20,12 +21,15 @@ modelguard: record digests, verify they have not drifted, diff weights, and prob
   python -m sovereign_m.modelguard verify [models.lock] [--ollama]
   python -m sovereign_m.modelguard diff BASE CANDIDATE [--json] [--config FILE]
   python -m sovereign_m.modelguard probe [--config FILE] [--probes FILE] [--endpoint URL] [--dry-run] [--json]
+  python -m sovereign_m.modelguard cmdguard [--context FILE] [--log FILE] [--policy FILE] -- COMMAND
   python -m sovereign_m.modelguard demo
 
 The same verbs work as: python -m sovereign_m modelguard ...
 lock and verify are local file and listing checks. diff needs two weight files
-(JSON, safetensors, or F32 GGUF). probe needs an endpoint, or --dry-run.
-This is a heuristic layer, not a proof that a model is safe.
+(JSON, safetensors, or F32 GGUF) and also scores MLP neurons. probe needs an
+endpoint, or --dry-run. cmdguard reviews a proposed tool command and is not
+wired into a live agent. This is a heuristic layer, not a proof that a model
+is safe.
 """.strip()
 
 
@@ -44,6 +48,8 @@ def main(argv: list[str] | None = None) -> int:
         return _diff(rest)
     if command == "probe":
         return _probe(rest)
+    if command == "cmdguard":
+        return _cmdguard(rest)
     if command == "demo":
         if rest:
             print(USAGE)
@@ -204,6 +210,57 @@ def _probe(args: list[str]) -> int:
     else:
         print(format_probe(result))
     return 0 if result["ok"] else 1
+
+
+
+def _cmdguard(args: list[str]) -> int:
+    context_path = None
+    log_path = None
+    policy_path = None
+    command_parts: list[str] = []
+    i = 0
+    while i < len(args):
+        arg = args[i]
+        if arg == "--":
+            command_parts.extend(args[i + 1 :])
+            break
+        if arg == "--context":
+            if i + 1 >= len(args):
+                print("usage: modelguard cmdguard [--context FILE] [--log FILE] [--policy FILE] -- COMMAND")
+                return 2
+            context_path = Path(args[i + 1])
+            i += 2
+            continue
+        if arg == "--log":
+            if i + 1 >= len(args):
+                print("usage: modelguard cmdguard [--context FILE] [--log FILE] [--policy FILE] -- COMMAND")
+                return 2
+            log_path = Path(args[i + 1])
+            i += 2
+            continue
+        if arg == "--policy":
+            if i + 1 >= len(args):
+                print("usage: modelguard cmdguard [--context FILE] [--log FILE] [--policy FILE] -- COMMAND")
+                return 2
+            policy_path = Path(args[i + 1])
+            i += 2
+            continue
+        if arg.startswith("-"):
+            print("usage: modelguard cmdguard [--context FILE] [--log FILE] [--policy FILE] -- COMMAND")
+            return 2
+        command_parts.append(arg)
+        i += 1
+    command = " ".join(command_parts).strip()
+    if not command:
+        print("usage: modelguard cmdguard [--context FILE] [--log FILE] [--policy FILE] -- COMMAND")
+        return 2
+    context = ""
+    if context_path is not None:
+        context = context_path.read_text(encoding="utf-8")
+    policy = load_policy(policy_path) if policy_path is not None else None
+    decision = review(command, context=context, policy=policy, log_path=log_path)
+    print(format_decision(decision))
+    return 0 if decision.action == "allow" else 1
 
 
 def _client():

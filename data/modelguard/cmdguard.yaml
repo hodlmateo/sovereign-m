@@ -1,0 +1,97 @@
+# Tweak this policy. Decisions are allow, ask, or block.
+# allow: first token only, and only when no deny rule also matches.
+# default-deny covers network tools, pipes to a shell, startup/ssh
+# writes, privilege changes, and secret paths.
+
+default: ask
+
+allow:
+  - ls
+  - pwd
+  - date
+  - whoami
+  - uname
+  - echo
+  - cat
+  - head
+  - wc
+  - true
+  - false
+
+ask:
+  - rm
+  - mv
+  - cp
+  - chmod
+  - chown
+  - mkdir
+  - touch
+  - git
+  - pip
+  - npm
+  - apt
+  - dnf
+  - docker
+  - systemctl
+  - kill
+  - pkill
+  - reboot
+  - shutdown
+  - dd
+  - mount
+  - umount
+  - crontab
+  - python
+  - python3
+
+network_tools:
+  - curl
+  - wget
+  - nc
+  - ncat
+  - netcat
+  - ssh
+  - scp
+  - sftp
+  - ftp
+  - telnet
+  - rsh
+  - rclone
+
+startup_paths:
+  - /etc/cron
+  - /etc/crontab
+  - /etc/systemd
+  - /etc/init.d
+  - /etc/rc.local
+  - .config/systemd
+  - crontab
+  - .bashrc
+  - .profile
+  - .zshrc
+  - .bash_profile
+
+secret_paths:
+  - /.ssh/
+  - .ssh/
+  - id_rsa
+  - id_ed25519
+  - authorized_keys
+  - known_hosts
+  - /etc/shadow
+  - /etc/sudoers
+  - .env
+  - .aws/credentials
+  - .gnupg/
+  - id_ecdsa
+
+privilege_patterns:
+  - \bsudo\b
+  - \bdoas\b
+  - \bpkexec\b
+  - \bchmod\s+[ug]\+s\b
+  - \bchown\b
+  - \busermod\b
+  - \bpasswd\b
+  - \bvisudo\b
+  - \bsetcap\b

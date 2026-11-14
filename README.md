@@ -197,18 +197,25 @@ paper chips 10000.00 -> 10000.10
 ### Model guard (weights and triggers)
 
 `sovereign_m.modelguard` is a small toolkit you can copy: record file and
-listing digests, diff two weight maps for concentrated row edits, and probe
-an endpoint with date, keyword, and error-string triggers. numpy is
+listing digests; diff two weight maps for concentrated row edits and for
+a handful of MLP neurons that hold most of a layer's change; probe an
+endpoint with date, keyword, and error-string triggers (and flag a
+shell-like payload that the baseline did not have); and review a
+proposed tool command with `cmdguard` (allow, ask, or block). numpy is
 optional. The synthetic demo uses only the standard library.
 
 A November 2026 write-up on weight-space backdoors is the starting point.
-Claims in that write-up about Microsoft Research and a technique named
-Lazarus are UNVERIFIED. A digest match or a clean diff is not a proof of
-safety. See `docs/modelguard.md`.
+Claims in that write-up about Microsoft Research, a technique named
+Lazarus, and specific hit rates are UNVERIFIED. A digest match or a
+clean diff is not a proof of safety. See `docs/modelguard.md` for the
+threat model, the dormancy hook (intentionally unimplemented), and a
+five-line `cmdguard` integration. This repo does not wire `cmdguard`
+into a live agent.
 
 ```bash
 python -m sovereign_m.modelguard demo
 python -m sovereign_m.modelguard probe --dry-run
+python -m sovereign_m.modelguard cmdguard -- ls
 python -m sovereign_m modelguard lock path/to/weights.safetensors --out models.lock
 ```
 
