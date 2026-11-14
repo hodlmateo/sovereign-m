@@ -1,18 +1,18 @@
-"""Command line for the demo. ``ask-m`` and ``python -m mlite`` share this."""
+"""Command line for the demo. ``ask-m`` and ``python -m sovereign_m`` share this."""
 
 from __future__ import annotations
 
 import argparse
 import sys
 
-from mlite.desk.engine import PaperDesk, format_trace
-from mlite.desk.tape import load_bars, load_script
-from mlite.gate.queue import Gate, GateError
-from mlite.memory.ollama import Ollama
-from mlite.memory.retrieve import ask, format_answer
-from mlite.paths import data_dir, workspace_dir
-from mlite.prove import prove
-from mlite.registry.router import format_route, route
+from sovereign_m.desk.engine import PaperDesk, format_trace
+from sovereign_m.desk.tape import load_bars, load_script
+from sovereign_m.gate.queue import Gate, GateError
+from sovereign_m.memory.ollama import Ollama
+from sovereign_m.memory.retrieve import ask, format_answer
+from sovereign_m.paths import data_dir, workspace_dir
+from sovereign_m.prove import prove
+from sovereign_m.registry.router import format_route, route
 
 USAGE = """
 ask-m: local sample memory, bot routing, a paper desk, and an approval gate.

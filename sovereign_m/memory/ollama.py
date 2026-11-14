@@ -39,7 +39,7 @@ class Ollama:
     def embed(self, text: str) -> list[float] | None:
         if not self.host:
             return None
-        model = os.environ.get("MLITE_EMBED_MODEL", "nomic-embed-text")
+        model = os.environ.get("SOVEREIGN_M_EMBED_MODEL", "nomic-embed-text")
         data = self._post("/api/embed", {"model": model, "input": text})
         if not data:
             return None
@@ -54,7 +54,7 @@ class Ollama:
     def answer(self, question: str, evidence: str) -> str | None:
         if not self.host:
             return None
-        model = os.environ.get("MLITE_ANSWER_MODEL", "llama3.2")
+        model = os.environ.get("SOVEREIGN_M_ANSWER_MODEL", "llama3.2")
         prompt = (
             "Phrase a short answer using only words from the evidence. "
             "If the evidence does not contain the answer, reply with exactly: I don't know.\n\n"

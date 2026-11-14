@@ -15,7 +15,7 @@
       <p class="tag">A plain-language guide to today's public demo of M.</p>
     </header>
     <p class="notice"><strong>Paper trading only, no real money, not financial advice.</strong></p>
-    <p class="lead">This walkthrough is for people who want to try M on a computer they own. It uses only steps and requirements that are in the current public README or project files (the repo is still hodlmateo/m-lite until a gate-2 rename). Where the README is silent, the gap is marked <span class="confirm">see README (to confirm)</span>.</p>
+    <p class="lead">This walkthrough is for people who want to try M on a computer they own. It uses only steps and requirements that are in the current public README or project files. Where the README is silent, the gap is marked <span class="confirm">see README (to confirm)</span>.</p>
 
     <h2>1. What you need</h2>
     <ul>
@@ -28,8 +28,8 @@
     <p>The public README does not start with a clone step. The first command below is the obvious way to copy the public repo. The install line after it is from the README.</p>
     <ol>
       <li>Copy the public project onto your computer:
-        <pre>git clone https://github.com/hodlmateo/m-lite.git</pre>
-        Then open the <code>m-lite</code> folder you just copied. (Not listed in the README; obvious first step. The folder name matches today's public repo, which is still m-lite until a gate-2 rename.)</li>
+        <pre>git clone https://github.com/hodlmateo/sovereign-m.git</pre>
+        Then open the <code>sovereign-m</code> folder you just copied. (Not listed in the README; obvious first step. The folder name matches the public repo.)</li>
       <li>From that folder, install the program the way the README shows:
         <pre>pip install -e .</pre>
         This also makes the same program available as the <code>ask-m</code> command.</li>
@@ -42,13 +42,13 @@ python -m pytest</pre>
 
     <h2>3. First run</h2>
     <p>From the project folder, the README's first demo command checks that the pieces work and prints PASS or FAIL:</p>
-    <pre>python -m mlite prove</pre>
+    <pre>python -m sovereign_m prove</pre>
     <p>After the install step, the same program is also available as:</p>
     <pre>ask-m prove</pre>
     <p>Then try a question the sample notes can answer (this example is from the README):</p>
-    <pre>python -m mlite "when do we water the fern"</pre>
+    <pre>python -m sovereign_m "when do we water the fern"</pre>
     <p>To walk the paper desk on the bundled synthetic tape:</p>
-    <pre>python -m mlite desk run</pre>
+    <pre>python -m sovereign_m desk run</pre>
     <p class="note">The desk prints a paper-trading warning first. It does not send an order.</p>
 
     <h2>4. Use your own memory and bots</h2>
@@ -56,11 +56,11 @@ python -m pytest</pre>
     <ul>
       <li><strong>Memory the demo already reads.</strong> The README says <code>ask</code> reads markdown under <code>data/notes/</code> and a SQLite seed in <code>data/sample_notes.sql</code>. Putting your own markdown notes in <code>data/notes/</code> is the folder the program already uses. How to retire or replace the sample notes safely is <span class="confirm">see README (to confirm)</span>.</li>
       <li><strong>The documented way to add a new note.</strong> The README's approval gate stages an import, lists the queue, and merges only after a person approves it. Until that approve step, a question about the new note returns "I don't know." The commands in the README look like this (the title and body are samples from the README; use your own text):
-        <pre>python -m mlite gate stage --title "Your title" --body "Your note."
-python -m mlite gate list
-python -m mlite gate approve ID</pre>
+        <pre>python -m sovereign_m gate stage --title "Your title" --body "Your note."
+python -m sovereign_m gate list
+python -m sovereign_m gate approve ID</pre>
         Replace <code>ID</code> with the id shown by <code>gate list</code>. <code>reject</code> drops an item instead.</li>
-      <li><strong>Where approved imports live.</strong> The README says approved imports are read from the local workspace, and that the queue lives in <code>var/</code> (gitignored). The code also allows an <code>MLITE_WORKSPACE</code> override so a demo can run without writing into the checkout. The exact file layout inside that workspace is <span class="confirm">see README (to confirm)</span>.</li>
+      <li><strong>Where approved imports live.</strong> The README says approved imports are read from the local workspace, and that the queue lives in <code>var/</code> (gitignored). The code also allows a <code>SOVEREIGN_M_WORKSPACE</code> override so a demo can run without writing into the checkout. The exact file layout inside that workspace is <span class="confirm">see README (to confirm)</span>.</li>
       <li><strong>Bots.</strong> The bots are listed in <code>data/registry.json</code>. Each entry has an <code>id</code>, a one-line <code>job</code>, <code>anti_jobs</code> (work that bot must refuse), and <code>hints</code>. A <code>threshold</code> sits at the top of the file. Editing that file is the place the demo keeps this list. Whether the program reloads it on its own, and whether you should replace the sample bots or add to them, is <span class="confirm">see README (to confirm)</span>.</li>
     </ul>
 
@@ -69,7 +69,7 @@ python -m mlite gate approve ID</pre>
       <p><a class="btn p" href="https://request.vanhornsi.com">Request help</a></p>
     </div>
 
-    <p class="note back"><a href="../index.html">Back to the sovereign-m overview</a> · <a href="https://github.com/hodlmateo/m-lite">Public repo</a> (still m-lite until a gate-2 rename)</p>
+    <p class="note back"><a href="../index.html">Back to the sovereign-m overview</a> · <a href="https://github.com/hodlmateo/sovereign-m">Public repo</a></p>
     <footer>
       <p>Built by Vanhorn SI · <a href="https://vanhornsi.com">vanhornsi.com</a></p>
       <nav class="social" aria-label="Vanhorn SI on the web">

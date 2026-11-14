@@ -10,12 +10,12 @@ from __future__ import annotations
 import tempfile
 from pathlib import Path
 
-from mlite.desk.engine import DISCLAIMER, PaperDesk
-from mlite.desk.tape import load_bars, load_script
-from mlite.gate.queue import Gate
-from mlite.memory.retrieve import Answer, ask
-from mlite.paths import data_dir
-from mlite.registry.router import route
+from sovereign_m.desk.engine import DISCLAIMER, PaperDesk
+from sovereign_m.desk.tape import load_bars, load_script
+from sovereign_m.gate.queue import Gate
+from sovereign_m.memory.retrieve import Answer, ask
+from sovereign_m.paths import data_dir
+from sovereign_m.registry.router import route
 
 
 def prove(data: Path | None = None) -> int:

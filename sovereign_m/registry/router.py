@@ -16,7 +16,7 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from mlite.text import lexemes
+from sovereign_m.text import lexemes
 
 HINT_WEIGHT = 0.20
 HINT_CAP = 0.60

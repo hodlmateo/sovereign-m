@@ -9,8 +9,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from mlite.desk.roles import Vote, vote_risk, vote_sizer, vote_skeptic, vote_trend
-from mlite.desk.tape import Bar
+from sovereign_m.desk.roles import Vote, vote_risk, vote_sizer, vote_skeptic, vote_trend
+from sovereign_m.desk.tape import Bar
 
 DISCLAIMER = "Paper trading demo, not financial advice."
 

@@ -1,5 +1,5 @@
-from mlite.desk.engine import DISCLAIMER
-from mlite.prove import prove
+from sovereign_m.desk.engine import DISCLAIMER
+from sovereign_m.prove import prove
 
 
 def test_prove_passes(capsys):

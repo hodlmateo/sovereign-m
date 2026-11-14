@@ -1,5 +1,5 @@
-from mlite.cli import main
-from mlite.desk.engine import DISCLAIMER
+from sovereign_m.cli import main
+from sovereign_m.desk.engine import DISCLAIMER
 
 
 def test_help():
@@ -11,7 +11,7 @@ def test_question_cites_a_note(capsys, monkeypatch):
         def enabled(self) -> bool:
             return False
 
-    monkeypatch.setattr("mlite.cli.Ollama.from_env", lambda: Off())
+    monkeypatch.setattr("sovereign_m.cli.Ollama.from_env", lambda: Off())
     assert main(["when do we water the fern"]) == 0
     out = capsys.readouterr().out
     assert "even days" in out
@@ -59,7 +59,7 @@ def test_desk_without_fresh_read_has_no_second_entry(capsys):
 
 
 def test_gate_cli_roundtrip(capsys, monkeypatch, tmp_path):
-    monkeypatch.setenv("MLITE_WORKSPACE", str(tmp_path))
+    monkeypatch.setenv("SOVEREIGN_M_WORKSPACE", str(tmp_path))
     assert (
         main(
             [
