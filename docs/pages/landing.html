@@ -33,11 +33,28 @@ footer .tiny{color:var(--soft);font-size:.85em;margin-top:12px}
 footer .social{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 16px;margin:14px 0 0;font-size:.92em}
 footer .social a{color:var(--teal)}
 .note{color:var(--dim);font-size:.9em;text-align:center;max-width:640px;margin:12px auto 0}
+
+.sample{margin:32px 0 0}
+.sample h2{margin-bottom:8px}
+.sample .caption{color:var(--dim);font-size:.9em;text-align:center;max-width:640px;margin:0 auto 18px}
+.gallery{display:grid;grid-template-columns:1fr;gap:12px}
+.gallery button{display:block;width:100%;padding:0;border:1px solid var(--border);border-radius:10px;background:var(--card);cursor:pointer;overflow:hidden}
+.gallery button:hover,.gallery button:focus-visible{border-color:var(--teal);outline:2px solid var(--teal);outline-offset:2px}
+.gallery img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
+.lightbox{position:fixed;inset:0;z-index:20;background:rgba(0,16,40,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px}
+.lightbox[hidden]{display:none}
+.lightbox img{max-width:min(1100px,100%);max-height:80vh;width:auto;height:auto;border-radius:8px;border:1px solid var(--border);background:var(--card)}
+.lightbox-close{margin:0 0 14px;padding:8px 16px;border-radius:8px;border:2px solid var(--teal);background:transparent;color:var(--ink);font:inherit;font-weight:600;cursor:pointer}
+.lightbox-close:hover,.lightbox-close:focus-visible{background:var(--teal);color:var(--navy);outline:none}
 @media (min-width:600px){
   html,body{font-size:18px}
   .wrap{padding:40px 24px 72px}
   .shield{width:96px;height:120px}
   h1{font-size:2.4em}
+  .gallery{grid-template-columns:1fr 1fr}
+}
+@media (min-width:800px){
+  .gallery{grid-template-columns:1fr 1fr 1fr}
 }
   </style>
 </head>
@@ -69,6 +86,45 @@ footer .social a{color:var(--teal)}
     <div class="actions">
       <a class="btn p" href="https://hodlmateo.github.io/sovereign-m/" target="_top">Open the current demo</a>
     </div>
+    <section class="sample" aria-labelledby="vsi-heading">
+      <h2 id="vsi-heading">Sample build: VSI Framing</h2>
+      <p class="caption">Sample site build by Vanhorn SI. Images are AI-generated.</p>
+      <div class="gallery">
+        <button type="button" data-full="../assets/vsi-framing/hero.webp" aria-label="Enlarge: A framing workbench with walnut frame corners and a mat cutter">
+          <img src="../assets/vsi-framing/hero.webp" alt="A framing workbench with walnut frame corners and a mat cutter" width="1280" height="720" loading="lazy">
+        </button>
+        <button type="button" data-full="../assets/vsi-framing/shop.webp" aria-label="Enlarge: A framing workshop with moulding samples on the wall and a large cutting table">
+          <img src="../assets/vsi-framing/shop.webp" alt="A framing workshop with moulding samples on the wall and a large cutting table" width="1152" height="864" loading="lazy">
+        </button>
+        <button type="button" data-full="../assets/vsi-framing/mat-cutting.webp" aria-label="Enlarge: Close-up of a bevelled double mat being cut with a steel ruler">
+          <img src="../assets/vsi-framing/mat-cutting.webp" alt="Close-up of a bevelled double mat being cut with a steel ruler" width="1152" height="864" loading="lazy">
+        </button>
+        <button type="button" data-full="../assets/vsi-framing/corners.webp" aria-label="Enlarge: Six frame corner samples in black, walnut, white, oak, silver and gold">
+          <img src="../assets/vsi-framing/corners.webp" alt="Six frame corner samples in black, walnut, white, oak, silver and gold" width="1152" height="864" loading="lazy">
+        </button>
+        <button type="button" data-full="../assets/vsi-framing/gallery-wall.webp" aria-label="Enlarge: A mixed gallery wall of framed art above a sofa">
+          <img src="../assets/vsi-framing/gallery-wall.webp" alt="A mixed gallery wall of framed art above a sofa" width="1152" height="864" loading="lazy">
+        </button>
+        <button type="button" data-full="../assets/vsi-framing/art-print.webp" aria-label="Enlarge: A large framed landscape print hanging above a sofa">
+          <img src="../assets/vsi-framing/art-print.webp" alt="A large framed landscape print hanging above a sofa" width="1152" height="864" loading="lazy">
+        </button>
+        <button type="button" data-full="../assets/vsi-framing/heirloom.webp" aria-label="Enlarge: A framed black-and-white farmhouse photograph on a mantel">
+          <img src="../assets/vsi-framing/heirloom.webp" alt="A framed black-and-white farmhouse photograph on a mantel" width="864" height="1152" loading="lazy">
+        </button>
+        <button type="button" data-full="../assets/vsi-framing/jersey.webp" aria-label="Enlarge: A sports jersey displayed in a black shadow box">
+          <img src="../assets/vsi-framing/jersey.webp" alt="A sports jersey displayed in a black shadow box" width="1152" height="864" loading="lazy">
+        </button>
+        <button type="button" data-full="../assets/vsi-framing/diploma-canvas.webp" aria-label="Enlarge: A framed canvas painting and a framed diploma on a white wall">
+          <img src="../assets/vsi-framing/diploma-canvas.webp" alt="A framed canvas painting and a framed diploma on a white wall" width="1152" height="864" loading="lazy">
+        </button>
+        <button type="button" data-full="../assets/vsi-framing/corporate.webp" aria-label="Enlarge: A wall of matching framed certificates in an office lobby">
+          <img src="../assets/vsi-framing/corporate.webp" alt="A wall of matching framed certificates in an office lobby" width="1152" height="864" loading="lazy">
+        </button>
+        <button type="button" data-full="../assets/vsi-framing/sample-art.webp" aria-label="Enlarge: An impressionist painting of a sunset over rolling hills">
+          <img src="../assets/vsi-framing/sample-art.webp" alt="An impressionist painting of a sunset over rolling hills" width="1152" height="864" loading="lazy">
+        </button>
+      </div>
+    </section>
     <footer>
       <p>Built by Vanhorn SI · <a href="https://vanhornsi.com" target="_blank" rel="noopener">vanhornsi.com</a></p>
       <nav class="social" aria-label="Vanhorn SI on the web">
@@ -83,5 +139,46 @@ footer .social a{color:var(--teal)}
       <p class="tiny">Paper trading demos are paper only. Not financial advice. MIT license.</p>
     </footer>
   </div>
+  <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Enlarged image">
+    <button type="button" class="lightbox-close" aria-label="Close enlarged image">Close</button>
+    <img alt="">
+  </div>
+  <script>
+  (function () {
+    var box = document.getElementById("lightbox");
+    var picture = box.querySelector("img");
+    var closer = box.querySelector(".lightbox-close");
+    var lastFocus = null;
+
+    function openBox(src, alt) {
+      picture.src = src;
+      picture.alt = alt || "";
+      box.hidden = false;
+      lastFocus = document.activeElement;
+      closer.focus();
+    }
+
+    function closeBox() {
+      box.hidden = true;
+      picture.removeAttribute("src");
+      picture.alt = "";
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+
+    document.querySelectorAll(".gallery button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var shot = btn.querySelector("img");
+        openBox(btn.getAttribute("data-full") || shot.src, shot.alt);
+      });
+    });
+    closer.addEventListener("click", closeBox);
+    box.addEventListener("click", function (event) {
+      if (event.target === box) closeBox();
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && !box.hidden) closeBox();
+    });
+  })();
+  </script>
 </body>
 </html>
