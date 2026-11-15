@@ -220,6 +220,22 @@ python -m sovereign_m modelguard lock path/to/weights.safetensors --out models.l
 ```
 
 
+### Self check (ports, web, privesc)
+
+`sovereign_m.selftest` is a read-only self check for machines you own. It
+scans an allowlist of your own addresses for services that listen too widely,
+probes local web services with a few GET requests, and runs a LinPEAS-style
+look at local privilege paths. It never exploits anything, never changes a
+setting, and writes a redacted report with a plain-English fix for each
+finding. A target outside the allowlist in the config is refused. See
+`docs/selftest.md`.
+
+```bash
+python examples/selftest/scan_local_demo.py
+python -m sovereign_m.selftest scan --check privesc
+```
+
+
 ## Where the patterns live
 
 - One job and anti-jobs: `data/registry.json`, `sovereign_m/registry/router.py`

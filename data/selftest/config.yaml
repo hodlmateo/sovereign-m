@@ -1,0 +1,236 @@
+# selftest config. Read-only checks for machines you own.
+#
+# scope.targets is the ONLY place network targets come from. Tokens:
+#   loopback  this machine's loopback address
+#   lan       this machine's private LAN addresses (container bridges are left out)
+#   vpn       this machine's mesh-VPN addresses (shared address space)
+# You may also list single addresses you own. Ranges and hostnames are refused.
+scope:
+  targets:
+    - loopback
+    - lan
+    - vpn
+
+report:
+  # Relative paths are under the checkout (var/ is gitignored).
+  # Override at run time with: scan --out-dir DIR
+  dir: var/selftest
+
+ports:
+  range: "1-65535"
+  use_nmap: true          # TCP connect scan only; falls back to built-in Python
+  nmap_timing: 3
+  connect_timeout: 0.5
+  workers: 100
+  # Ports that are normal to expose widely (still noted, but low severity).
+  expected_wide:
+    - 22
+  # Ports where "reachable by anyone" is a bigger deal, and why.
+  sensitive:
+    11434: "Ollama's API has no login, so anyone who can reach it can use the GPU and pull or delete models"
+    2375: "the Docker API without TLS is root on the machine"
+    445: "SMB file sharing is a common target for password guessing and worms"
+    139: "SMB file sharing is a common target for password guessing and worms"
+    3389: "remote desktop is a common target for password guessing"
+    5900: "VNC remote desktop often has a weak or no password"
+    6379: "Redis normally has no login"
+    27017: "MongoDB often has no login"
+    9200: "Elasticsearch often has no login"
+    5432: "a database should not be open to the whole LAN"
+    3306: "a database should not be open to the whole LAN"
+
+web:
+  # When true, every open port the ports check finds (except skip_ports) also gets a GET /.
+  auto_discover: true
+  skip_ports:
+    - 22
+    - 53
+    - 139
+    - 445
+  # Extra services to probe (host token or address, then port).
+  services:
+    - "loopback:8460"
+    - "loopback:8470"
+    - "loopback:8475"
+    - "loopback:8800"
+    - "loopback:11434"
+    - "lan:8480"
+    - "lan:8481"
+  requests_per_second: 15
+  timeout: 3
+  # GET-only. Names that sound like actions (reset, send, run ...) are dropped in code.
+  wordlist:
+    - admin
+    - api
+    - docs
+    - redoc
+    - openapi.json
+    - swagger.json
+    - swagger
+    - health
+    - healthz
+    - status
+    - metrics
+    - config
+    - settings
+    - login
+    - console
+    - debug
+    - api/v1
+    - api/health
+    - api/status
+    - api/tags
+    - api/version
+    - api/ps
+    - api/chat
+    - api/generate
+    - api/config
+    - v1/models
+    - robots.txt
+    - sitemap.xml
+    - favicon.ico
+    - .env
+    - .git/HEAD
+    - state
+    - terminal
+    - shell
+    - files
+    - download
+    - logs
+    - log
+    - info
+    - version
+    - ping
+    - ui
+    - app
+    - dashboard
+    - static
+    - assets
+    - users
+    - user
+    - me
+    - jobs
+    - queue
+    - orders
+    - trades
+    - positions
+    - desks
+    - desk
+    - model
+    - models
+    - chat
+    - tmp
+    - test
+    - server-status
+    - actuator
+    - _stcore/health
+
+privesc:
+  suid_roots:
+    - /usr
+    - /opt
+    - /bin
+    - /sbin
+    - /srv
+  # Normal on a stock Debian or Ubuntu desktop; anything else is listed for a look.
+  suid_known:
+    - passwd
+    - chsh
+    - chfn
+    - gpasswd
+    - newgrp
+    - su
+    - sudo
+    - sudoedit
+    - mount
+    - umount
+    - pkexec
+    - fusermount
+    - fusermount3
+    - ping
+    - ping6
+    - ssh-keysign
+    - dbus-daemon-launch-helper
+    - polkit-agent-helper-1
+    - chage
+    - expiry
+    - wall
+    - write
+    - write.ul
+    - ssh-agent
+    - crontab
+    - unix_chkpwd
+    - pam_extrausers_chkpwd
+    - mount.nfs
+    - mount.cifs
+    - plocate
+    - mlocate
+    - at
+    - Xorg.wrap
+    - snap-confine
+    - ntfs-3g
+    - pppd
+    - traceroute6.iputils
+    - chrome-sandbox
+    - dotlockfile
+    - bsd-write
+    - ksu
+    - lxc-user-nic
+    - vmware-user-suid-wrapper
+    - gst-ptp-helper
+    - mutter-x11-frames
+    - utempter
+    - ssh-agent
+    - bwrap
+    - Xorg
+    - screen
+    - ubuntu-core-launcher
+    - cdrdao
+    - cdrecord
+    - cdparanoia
+    - mailx
+    - fusermount-glusterfs
+    - pt_chown
+    - ldconfig
+    - sudo.ws
+    - camel-lock-helper-1.2
+  suid_risky:
+    - bash
+    - sh
+    - dash
+    - zsh
+    - find
+    - vim
+    - vi
+    - nano
+    - less
+    - more
+    - awk
+    - gawk
+    - python
+    - python3
+    - perl
+    - ruby
+    - node
+    - nmap
+    - cp
+    - mv
+    - tar
+    - env
+    - tee
+    - dd
+    - xxd
+    - php
+    - lua
+    - gdb
+    - strace
+    - docker
+    - busybox
+  unit_dirs:
+    - /etc/systemd/system
+    - /usr/lib/systemd/system
+    - /lib/systemd/system
+    - /etc/systemd/user
+  secret_prune: []
+  secret_max_depth: 6
+  run_linpeas_if_present: true
