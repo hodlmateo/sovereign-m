@@ -1,0 +1,131 @@
+# gateway config. One front door for local services.
+#
+# Values written as ${NAME} are read from the environment when the gateway
+# starts; ${NAME:-fallback} uses the fallback when NAME is unset. A route whose
+# upstream still has an unset ${NAME} is DISABLED (the others still run), so
+# this file is safe to run as is: set the port variables for the routes you use.
+#
+# Allow entries are matched against the path AFTER the route prefix.
+#   /api/tags        exact path
+#   /v1/*            glob (* also crosses slashes)
+#   /static/         ends with a slash: a prefix
+#   GET /api/tags    optional method word in front
+# A route with no allow entries refuses everything.
+
+server:
+  host: loopback              # or a single address, which also needs allow_nonloopback
+  port: ${M_GATEWAY_PORT:-8787}
+  allow_nonloopback: false
+
+auth:
+  keys_file: ""               # empty: <workspace>/gateway/keys.json (SOVEREIGN_M_WORKSPACE moves it)
+  default_rate_per_min: 120   # per client; a key's own --rate wins; 0 means no limit
+
+audit:
+  enabled: true
+  path: ""                    # empty: <workspace>/gateway/audit.jsonl
+  max_bytes: 5242880          # rotate at this size
+  keep: 5                     # rotated files kept
+  query: strip                # strip: drop ?query. redact: keep names, hide values
+
+# Global middleware, outermost first. Each entry is module:attr, a factory
+# called with the entry's config mapping. Example (not enabled):
+#   - use: sovereign_m.cache.middleware:make_middleware
+#     config:
+#       ttl_seconds: 60
+middleware:
+
+routes:
+  - name: m-chat
+    prefix: /m/
+    upstream: http://localhost:${M_CHAT_PORT}
+    methods:
+      - GET
+      - POST
+    allow:
+      - /
+      - /api/*
+      - /static/
+    health_path: /
+    timeout: 120
+    max_body_bytes: 1048576
+
+  - name: trading-ui
+    prefix: /trading/
+    upstream: http://localhost:${TRADING_UI_PORT}
+    methods:
+      - GET
+    allow:
+      - /
+      - /static/
+      - /_stcore/*
+    health_path: /_stcore/health
+
+  - name: institute-portal
+    prefix: /institute/
+    upstream: http://localhost:${INSTITUTE_PORTAL_PORT}
+    methods:
+      - GET
+      - POST
+    allow:
+      - /
+      - /static/
+      - /api/*
+    deny:
+      - /api/admin/*
+    health_path: /
+
+  # Model server. Admin calls (pull, delete, create, copy, push, blobs) are
+  # refused on every route unless allow_admin: true is set.
+  - name: ollama
+    prefix: /ollama/
+    upstream: http://localhost:${OLLAMA_PORT}
+    methods:
+      - GET
+      - POST
+    allow:
+      - GET /api/tags
+      - GET /api/version
+      - GET /api/ps
+      - POST /api/chat
+      - POST /api/generate
+      - POST /api/embed
+      - POST /v1/chat/completions
+      - GET /v1/models
+    health_path: /api/version
+    timeout: 300
+    max_body_bytes: 4194304
+
+  - name: llama-server
+    prefix: /llama/
+    upstream: http://localhost:${LLAMA_SERVER_PORT}
+    methods:
+      - GET
+      - POST
+    allow:
+      - GET /health
+      - GET /v1/models
+      - POST /v1/chat/completions
+      - POST /v1/completions
+      - POST /v1/embeddings
+    # Optional: the gateway adds the backend's own key, read from a file that
+    # only you can read. Clients never see it. Remove the block if unused.
+    upstream_auth:
+      header: Authorization
+      scheme: Bearer
+      key_file: $XDG_CONFIG_HOME/sovereign-m/llama-server.key
+    health_path: /health
+    timeout: 300
+    max_body_bytes: 4194304
+
+  - name: scheduler-status
+    prefix: /scheduler/
+    upstream: http://localhost:${SCHEDULER_STATUS_PORT}
+    methods:
+      - GET
+    allow:
+      - /status
+      - /health
+    health_path: /health
+    timeout: 10
+    max_body_bytes: 0
