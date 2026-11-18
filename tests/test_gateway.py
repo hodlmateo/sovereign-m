@@ -138,10 +138,18 @@ class Rig:
         finally:
             conn.close()
 
-    def audit_lines(self):
-        self.audit.close()
+    def audit_lines(self, expected=0, timeout=2.0):
+        # The server writes the audit line after the response is sent, so poll
+        # (bounded) until the expected number of lines has landed.
         path = self.tmp / "audit.jsonl"
-        return path.read_text().splitlines() if path.exists() else []
+        deadline = time.monotonic() + timeout
+        while True:
+            lines = path.read_text().splitlines() if path.exists() else []
+            if len(lines) >= expected or time.monotonic() >= deadline:
+                break
+            time.sleep(0.01)
+        self.audit.close()
+        return lines
 
     def close(self):
         self.server.shutdown()
@@ -225,7 +233,7 @@ def test_upstream_auth_injected_from_key_file_and_not_logged(rig, upstream, tmp_
     assert status == 200
     assert upstream.seen[-1]["headers"]["authorization"] == f"Bearer {UPSTREAM_KEY}"
     assert UPSTREAM_KEY not in body.decode() and UPSTREAM_KEY not in json.dumps(headers)
-    assert UPSTREAM_KEY not in "\n".join(r.audit_lines())
+    assert UPSTREAM_KEY not in "\n".join(r.audit_lines(1))
     captured = capsys.readouterr()
     assert UPSTREAM_KEY not in captured.out + captured.err
 
@@ -470,7 +478,7 @@ def test_audit_has_no_bodies_keys_or_query(rig):
     r.request("POST", "/svc/in?token=qsecret-9911", key, body=SECRET_BODY.encode())
     r.request("GET", "/svc/a", "wrong-key-value")
     r.request("GET", "/svc/a", key, headers={"X-Cache": "x"})
-    lines = r.audit_lines()
+    lines = r.audit_lines(3)
     text = "\n".join(lines)
     assert SECRET_BODY not in text and key not in text and "qsecret" not in text and "wrong-key-value" not in text
     rows = [json.loads(line) for line in lines]
@@ -503,7 +511,7 @@ def test_cache_header_recorded(rig):
     key = r.key()
     status, headers, _ = r.request("GET", "/svc/a", key)
     assert headers["x-cache"] == "HIT"
-    assert json.loads(r.audit_lines()[0])["cache"] == "HIT"
+    assert json.loads(r.audit_lines(1)[0])["cache"] == "HIT"
 
 
 # ---- health --------------------------------------------------------------
