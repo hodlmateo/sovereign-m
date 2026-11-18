@@ -236,6 +236,24 @@ python -m sovereign_m.selftest scan --check privesc
 ```
 
 
+### Gateway (one front door)
+
+`sovereign_m.gateway` is a small reverse proxy for services on a machine you
+own. It binds loopback by default, gives each client its own key with route
+scopes and a rate limit, applies a path allowlist per route (model-server admin
+calls and app docs pages are blocked unless a route opts in), writes an audit
+log with no bodies and no keys, and runs middleware such as a cache from the
+config. It does not replace a firewall; `docs/gateway.md` has the config
+reference and a migration guide for rebinding each backend to loopback.
+
+```bash
+python -m sovereign_m.gateway check-config
+python -m sovereign_m.gateway keys add laptop --scopes ollama --rate 60/min
+python -m sovereign_m.gateway serve
+python examples/gateway/gateway_local_demo.py
+```
+
+
 ## Where the patterns live
 
 - One job and anti-jobs: `data/registry.json`, `sovereign_m/registry/router.py`
@@ -246,6 +264,7 @@ python -m sovereign_m.selftest scan --check privesc
 - The tour: `sovereign_m/prove.py`
 - Commands: `sovereign_m/cli.py`
 - Model guard: `sovereign_m/modelguard/`, `data/modelguard/`, `docs/modelguard.md`
+- Gateway: `sovereign_m/gateway/`, `data/gateway/config.yaml`, `docs/gateway.md`
 
 ## Left out on purpose
 

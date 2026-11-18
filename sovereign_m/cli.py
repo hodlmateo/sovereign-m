@@ -28,6 +28,7 @@ ask-m: local sample memory, bot routing, a paper desk, and an approval gate.
   ask-m modelguard demo
   ask-m modelguard lock|verify|diff|probe|cmdguard ...
   ask-m selftest scan|report ...
+  ask-m gateway serve|check-config|keys ...
 
 Add --no-ollama to skip a local model even if one is installed.
 Paper trading demo, not financial advice.
@@ -50,6 +51,9 @@ def main(argv: list[str] | None = None) -> int:
     if args[0] == "selftest":
         from sovereign_m.selftest.cli import main as selftest_main
         return selftest_main(args[1:])
+    if args[0] == "gateway":
+        from sovereign_m.gateway.cli import main as gateway_main
+        return gateway_main(args[1:])
     if args[0] == "--who":
         task = " ".join(args[1:]).strip()
         if not task:
