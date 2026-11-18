@@ -1,0 +1,23 @@
+# scheduler settings. Relative db and lock_dir paths are under the workspace
+# directory (SOVEREIGN_M_WORKSPACE, default var/). jobs_file is next to this file.
+jobs_file: jobs.yaml
+db: scheduler/scheduler.sqlite
+lock_dir: scheduler/locks
+tick_seconds: 5
+tail_bytes: 4096
+kill_grace_seconds: 2
+
+status_page:
+  host: loopback          # loopback only unless allow_nonloopback is true
+  port: 8490
+  allow_nonloopback: false
+
+# Read-only import of systemd user timers (list-timers, show, journal reads).
+systemd:
+  enabled: true
+  units:
+    - "*"                 # fnmatch patterns on the .timer unit name
+  max_units: 40
+  log_lines: 5
+  cache_seconds: 60
+  command_timeout: 15
