@@ -220,6 +220,17 @@ python -m sovereign_m modelguard lock path/to/weights.safetensors --out models.l
 ```
 
 
+### Local 35B chat lane
+
+`examples/local_llm/` is a copyable llama-server setup for Qwen3.6-35B-A3B
+UD-Q4_K_M: loopback only, a key file (mode 600, never printed), 16k context,
+q8_0 KV, flash attention, `-ngl 99`, and `--n-cpu-moe` defaulting to 34.
+On an RTX 3060 12 GB, sitting next to a 7B desk model, this ran at about
+30 to 35 tokens a second. Prompts estimated at 15,000 tokens or more
+(character length / 4) should skip llama-server and go to a longer-context
+fallback. The helper is `sovereign_m.local_llm`. The hash lock is
+`examples/local_llm/models.lock`. See `examples/local_llm/README.md`.
+
 ### Self check (ports, web, privesc)
 
 `sovereign_m.selftest` is a read-only self check for machines you own. It
@@ -246,6 +257,7 @@ python -m sovereign_m.selftest scan --check privesc
 - The tour: `sovereign_m/prove.py`
 - Commands: `sovereign_m/cli.py`
 - Model guard: `sovereign_m/modelguard/`, `data/modelguard/`, `docs/modelguard.md`
+- Local 35B chat lane (loopback llama-server, 15k pre-route, hash lock): `sovereign_m/local_llm/`, `examples/local_llm/`, `examples/local_llm/README.md`
 
 ## Left out on purpose
 

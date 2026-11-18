@@ -1,0 +1,16 @@
+[Unit]
+Description=llama-server Qwen3.6-35B-A3B (loopback only, API key required)
+After=network-online.target
+
+[Service]
+Type=simple
+# Edit QWEN35_ROOT to the directory that contains serve-qwen35.sh and serve-qwen35.conf.
+Environment=QWEN35_ROOT=%h/local-llm
+WorkingDirectory=%h/local-llm
+ExecStart=/bin/bash %h/local-llm/serve-qwen35.sh --foreground
+Restart=on-failure
+RestartSec=8
+Nice=5
+
+[Install]
+WantedBy=default.target
