@@ -124,8 +124,9 @@ routes:
     methods:
       - GET
     allow:
-      - /status
-      - /health
+      - GET /
+      - GET /api/status
+      - GET /health
     health_path: /health
     timeout: 10
     max_body_bytes: 0
