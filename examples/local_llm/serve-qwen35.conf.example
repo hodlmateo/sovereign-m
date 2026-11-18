@@ -1,0 +1,25 @@
+# Copy this file to serve-qwen35.conf and fill in the paths for your machine.
+# serve-qwen35.conf is for local use and should not be committed.
+
+# Full path to the llama-server binary (CUDA build recommended).
+# LLAMA_SERVER=/path/to/llama-server
+
+# Full path to Qwen3.6-35B-A3B UD-Q4_K_M.gguf
+# MODEL=/path/to/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf
+
+# API key file, chmod 600. The script reads the path, never prints the key.
+# KEYFILE=/path/to/api.key
+
+# Bind address: "loopback" only. Any other value is refused.
+HOST=loopback
+PORT=18080
+
+NGL=99
+THREADS=8
+CTX=16384
+N_CPU_MOE=34
+CACHE_TYPE_K=q8_0
+CACHE_TYPE_V=q8_0
+FLASH_ATTN=on
+PARALLEL=1
+REASONING=off
