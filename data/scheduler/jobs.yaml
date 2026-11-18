@@ -1,0 +1,39 @@
+# Example jobs. All harmless. command is an argv list (no shell) unless shell: true.
+# {python} becomes the running interpreter, {workspace} the workspace directory.
+#
+# schedule: "M H dom mon dow" (lists, ranges, steps, names) or "every 5m" (s, m, h, d)
+# jobs that share a lock_group never overlap each other.
+jobs:
+  - name: hello-echo
+    command:
+      - echo
+      - "hello from the scheduler"
+    schedule: "every 5m"
+    timeout_seconds: 10
+    retries: 0
+    retry_backoff_seconds: 5
+    enabled: true
+
+  - name: nightly-python
+    command:
+      - "{python}"
+      - -c
+      - "print('nightly demo job')"
+    schedule: "30 2 * * *"
+    timeout_seconds: 30
+    retries: 2
+    retry_backoff_seconds: 10
+    lock_group: demo
+    env_allowlist:
+      - LANG
+    enabled: true
+
+  - name: weekday-report
+    command:
+      - "{python}"
+      - -c
+      - "print('weekday demo report')"
+    schedule: "0 9 * * mon-fri"
+    timeout_seconds: 30
+    lock_group: demo
+    enabled: false

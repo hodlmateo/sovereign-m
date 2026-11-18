@@ -236,6 +236,22 @@ python -m sovereign_m.selftest scan --check privesc
 ```
 
 
+### Scheduler (jobs and a status page)
+
+`sovereign_m.scheduler` runs jobs from a small YAML file in subprocesses with a
+timeout, retries with backoff, and file locks so a job never overlaps itself,
+even across two runner processes. Attempts go to a private SQLite file with
+redacted output excerpts. It can read your systemd user timers (read-only, from
+an allowlist of verbs) and serves a loopback-only status page with no actions.
+See `docs/scheduler.md`.
+
+```bash
+python examples/scheduler/demo.py
+python -m sovereign_m.scheduler list
+python -m sovereign_m.scheduler status-page
+```
+
+
 ## Where the patterns live
 
 - One job and anti-jobs: `data/registry.json`, `sovereign_m/registry/router.py`
@@ -246,6 +262,7 @@ python -m sovereign_m.selftest scan --check privesc
 - The tour: `sovereign_m/prove.py`
 - Commands: `sovereign_m/cli.py`
 - Model guard: `sovereign_m/modelguard/`, `data/modelguard/`, `docs/modelguard.md`
+- Scheduler: `sovereign_m/scheduler/`, `data/scheduler/`, `docs/scheduler.md`
 
 ## Left out on purpose
 
