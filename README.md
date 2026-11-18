@@ -236,6 +236,19 @@ python -m sovereign_m.selftest scan --check privesc
 ```
 
 
+### Response cache
+
+`sovereign_m.cache` is a local sqlite cache for model calls. Repeat requests
+with low temperature and nothing personal in them are answered from the cache.
+Errors, streams, tool calls, images, and personal-looking prompts are never
+stored. The cache file is mode 0600. See `docs/cache.md`.
+
+```bash
+python -m sovereign_m.cache demo
+python examples/cache/library_demo.py
+```
+
+
 ## Where the patterns live
 
 - One job and anti-jobs: `data/registry.json`, `sovereign_m/registry/router.py`
