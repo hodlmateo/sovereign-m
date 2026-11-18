@@ -1,0 +1,48 @@
+# cache config. Only identical, low-temperature, non-personal requests are stored.
+#
+# db: leave empty to use <workspace>/cache/responses.sqlite
+# (the workspace is $SOVEREIGN_M_WORKSPACE, or var/ in the checkout).
+db:
+ttl_seconds: 86400
+max_mb: 64
+max_entries: 5000
+
+# Cache only when temperature is at or below this value.
+temperature_max: 0.2
+# A request with no temperature counts as NOT low, unless you add a
+# default_temperature number here that matches your backend's real default.
+cache_streams: false
+
+never_cache_routes: []
+never_cache_models: []
+
+# POST paths (after the route prefix) that are model calls.
+endpoints:
+  - /api/chat
+  - /api/generate
+  - /v1/chat/completions
+  - /v1/completions
+  - /ask-text
+  - /chat
+
+# Whole-word, case-insensitive markers that mean personal or time-sensitive.
+markers:
+  - today
+  - now
+  - current
+  - latest
+  - price
+  - weather
+  - my account
+  - my password
+  - address
+  - phone
+  - schedule
+  - remind
+
+# Regexes (single-quoted so backslashes survive): emails, card-like and phone-like digits.
+patterns:
+  - '[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}'
+  - '\b(?:\d[ -]?){13,19}\b'
+  - '\b\d{3}[-. ]\d{3}[-. ]\d{4}\b'
+  - '\(\d{3}\)\s?\d{3}[-. ]\d{4}'
