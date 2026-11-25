@@ -1,0 +1,21 @@
+[package]
+name = "cmdguard"
+version = "0.1.0"
+edition = "2021"
+description = "Rust port of sovereign_m.modelguard.cmdguard (policy-review path only)"
+license = "MIT"
+
+[lib]
+name = "cmdguard"
+path = "src/lib.rs"
+
+[[bin]]
+name = "cmdguard-rs"
+path = "src/main.rs"
+
+[dependencies]
+regex = "1"
+serde_json = "1"
+
+[profile.release]
+opt-level = 2

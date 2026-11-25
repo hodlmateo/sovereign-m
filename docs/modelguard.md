@@ -128,6 +128,33 @@ if decision.action == "ask":
 
 Tune `data/modelguard/cmdguard.yaml` before you use it.
 
+### Rust port (opt-in, not wired in)
+
+`rust/cmdguard/` is a Rust port of the `review` path only: the YAML
+policy, default-deny rules, trigger-context flag, JSONL log, and the
+`cmdguard` CLI. It does not touch lock / verify / diff / probe. Python
+stays the default and the fallback; nothing imports the Rust path.
+
+```bash
+cd rust/cmdguard && cargo build --release --offline   # -> target/release/cmdguard-rs
+cargo test --release --offline                         # Rust unit tests
+python -m pytest tests/test_cmdguard_rs.py             # Python-vs-Rust differential tests
+```
+
+`sovereign_m.modelguard.cmdguard_rs.review` has the same signature as
+`cmdguard.review`. It runs the binary and falls back to the Python
+implementation if the binary is missing, fails, prints a malformed
+decision, or the policy uses something Rust declines to guess at (for
+example a lookaround in `privilege_patterns`; Rust's `regex` has none).
+Python's `re` and Rust's `regex` disagree on `\w`, `\s` and case folding
+for some Unicode, so the port normalises text with tables generated from
+the running Python (`rust/cmdguard/tools/gen_pytables.py`). A test fails if
+those tables go stale after a Python upgrade.
+
+The differential tests send the same commands, contexts and policies to
+both implementations and require identical decisions. A disagreement is a
+bug in the Rust port; never loosen a rule to make a test pass.
+
 ## Demo
 
 `examples/modelguard/implanted_neuron_demo.py` and

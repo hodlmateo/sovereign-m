@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SKIP = {".git", ".venv", "var", "__pycache__", ".pytest_cache", ".mypy_cache"}
+SKIP = {".git", ".venv", "var", "target", "__pycache__", ".pytest_cache", ".mypy_cache"}
 
 EMAIL = re.compile(
     r"[A-Za-z0-9._%+\-]+"
