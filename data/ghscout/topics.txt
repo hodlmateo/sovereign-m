@@ -1,0 +1,8 @@
+# One GitHub topic per line. Lines starting with # are comments.
+# A topics file in the hub scout folder, or --topic on the command line, overrides this default.
+mcp-server
+rag
+local-llm
+ai-agents
+llm-tools
+developer-tools

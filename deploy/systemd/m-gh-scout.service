@@ -1,0 +1,13 @@
+# NOT INSTALLED. The operator reviews, then installs and enables it by hand.
+# Read-only on GitHub. Repo code never runs on the host (bubblewrap sandbox or not run). Model via the routines m_llm helper.
+[Unit]
+Description=M GitHub scout (weekly, read-only)
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/sovereign-m
+Environment=M_HUB=%h/m_hub
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/usr/bin/python3 -m sovereign_m.ghscout run --max-repos 8
+Nice=15
+TimeoutStartSec=90min

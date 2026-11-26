@@ -1,0 +1,12 @@
+# NOT INSTALLED (the operator installs and enables it by hand). Weekly, Sunday 10:00 America/New_York.
+[Unit]
+Description=M GitHub scout weekly timer
+
+[Timer]
+OnCalendar=Sun *-*-* 10:00:00 America/New_York
+Persistent=false
+AccuracySec=1min
+Unit=m-gh-scout.service
+
+[Install]
+WantedBy=timers.target

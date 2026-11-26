@@ -37,8 +37,11 @@ def test_checkout_has_no_contact_address_or_mesh_markers():
             email = EMAIL.search(line)
             if email and not (relative.startswith("docs/") and "mailto:" in line):
                 problems.append(f"{relative}:{line_no} email")
-            if IPV4.search(line):
-                problems.append(f"{relative}:{line_no} ip")
+            # <LOOPBACK_HOST> and <WILDCARD_V4> are not contact leaks; the operator guide
+            # uses the latter to say services must not bind all interfaces.
+            for token in IPV4.findall(line):
+                if token not in {"<LOOPBACK_HOST>", "<WILDCARD_V4>"}:
+                    problems.append(f"{relative}:{line_no} ip")
             if TAX_NUMBER.search(line) or TAX_WORD.search(line):
                 problems.append(f"{relative}:{line_no} tax-id")
             if MESH_NET.search(line) or MESH_WORD.search(line):
