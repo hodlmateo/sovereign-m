@@ -1,0 +1,13 @@
+# NOT INSTALLED. The operator reviews, then installs and enables it by hand.
+# Drafts only: never posts, replies or schedules. Model: Qwen3.6-35B-A3B via the routines m_llm helper, qwen2.5:14b fallback.
+[Unit]
+Description=M social: Vanhorn SI evening mentions digest
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/sovereign-m
+Environment=M_HUB=%h/m_hub
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/usr/bin/python3 -m sovereign_m.social mentions --brand vanhorn-si
+Nice=10
+TimeoutStartSec=20min

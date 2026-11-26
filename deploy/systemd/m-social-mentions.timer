@@ -1,0 +1,12 @@
+# NOT INSTALLED (the operator installs and enables it by hand).
+[Unit]
+Description=M social: Vanhorn SI evening mentions digest timer
+
+[Timer]
+OnCalendar=Mon..Fri *-*-* 18:00:00 America/New_York
+Persistent=false
+AccuracySec=1min
+Unit=m-social-mentions.service
+
+[Install]
+WantedBy=timers.target

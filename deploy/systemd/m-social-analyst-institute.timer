@@ -1,0 +1,12 @@
+# NOT INSTALLED (the operator installs and enables it by hand).
+[Unit]
+Description=M social Analyst: Institute weekly results note timer
+
+[Timer]
+OnCalendar=Mon *-*-* 09:00:00 America/New_York
+Persistent=false
+AccuracySec=1min
+Unit=m-social-analyst-institute.service
+
+[Install]
+WantedBy=timers.target
