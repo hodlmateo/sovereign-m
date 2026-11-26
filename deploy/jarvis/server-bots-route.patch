@@ -1,0 +1,25 @@
+--- a/server.py
++++ b/server.py
+@@ -1157,3 +1157,17 @@
+ 
++    def _bots(self, method):
++        # M Bots page (sovereign-m branch m-sovereign-loop). Lazy import: a failure only affects /bots.
++        try:
++            _p = os.environ.get("M_SOVEREIGN_PATH") or os.path.join(os.path.expanduser("~"), "sovereign-m")
++            if _p not in sys.path:
++                sys.path.insert(0, _p)
++            from sovereign_m.botspage import jarvis as _bj
++            return _bj.serve(self, method)
++        except Exception as e:
++            sys.stderr.write("bots route failed: %s\n" % e)
++            return self._json(500, {"error": "bots unavailable"})
++
+     def do_GET(self):
++        if self.path == "/bots" or self.path.startswith("/bots/"):
++            return self._bots("GET")
+         if self.path.split("?", 1)[0] == "/api/memory/chats":   # unified read-only chat memory (token-gated)
+@@ -1532,2 +1546,4 @@
+     def do_POST(self):
++        if self.path.startswith("/bots/"):
++            return self._bots("POST")
+         if self.path.startswith("/dog/"):

@@ -1,0 +1,13 @@
+# NOT INSTALLED (the operator installs and enables it by hand). Every 30 minutes, 7:00 AM through 10:00 PM America/New_York.
+[Unit]
+Description=M sovereign loop, every 30 min 7 AM-10 PM ET
+
+[Timer]
+OnCalendar=*-*-* 07..21:00,30:00 America/New_York
+OnCalendar=*-*-* 22:00:00 America/New_York
+Persistent=false
+AccuracySec=1min
+Unit=m-sovereign-loop.service
+
+[Install]
+WantedBy=timers.target

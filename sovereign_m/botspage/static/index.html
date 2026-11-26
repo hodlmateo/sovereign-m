@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>M Bots</title>
+<style>
+:root{--bg:#f4f5f7;--panel:#fff;--ink:#16181d;--mute:#667085;--line:#e1e4ea;--accent:#2f5bea;--ok:#1a7f4b;--warn:#b26a00;--fail:#c62828;--mine:#e8eefc}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1115;--panel:#181b22;--ink:#e8eaf0;--mute:#98a2b3;--line:#2a2f3a;--accent:#7b9cff;--ok:#4cc38a;--warn:#e0a13a;--fail:#ff6b6b;--mine:#1f2a4a}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.4 -apple-system,system-ui,Segoe UI,Roboto,sans-serif;display:flex;flex-direction:column;-webkit-text-size-adjust:100%}
+header{background:var(--panel);border-bottom:1px solid var(--line);padding:calc(env(safe-area-inset-top) + 8px) 16px 8px;position:sticky;top:0;z-index:5}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+h1{font-size:18px;margin:0 8px 0 0}
+.pill{border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:14px;background:var(--panel);color:var(--ink);text-decoration:none;min-height:36px;display:inline-flex;align-items:center}
+.pill.fail{background:var(--fail);border-color:var(--fail);color:#fff;font-size:13px;padding:4px 10px;min-height:32px;white-space:nowrap}
+#failed{flex-wrap:nowrap;overflow-x:auto;max-width:100%;scrollbar-width:none}
+#wbtn b{margin-left:6px}
+.pill.warn{border-color:var(--warn);color:var(--warn)}
+button{font:inherit;cursor:pointer}
+#waiting{display:none;background:var(--panel);border-bottom:1px solid var(--line);padding:8px 16px;max-height:40vh;overflow:auto}
+#waiting.open{display:block}
+#waiting .w{padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+#waiting .w:last-child{border:0}
+main{flex:1;min-height:0;display:flex;flex-direction:column}
+#bots{display:flex;gap:8px;overflow-x:auto;padding:10px 16px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+#bots::-webkit-scrollbar{display:none}
+.bot{flex:0 0 auto;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:12px;padding:8px 12px;min-height:44px;font-size:15px}
+.bot[aria-current=true]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.bot small{display:block;color:var(--mute);font-size:12px}
+.bot small.hot{color:var(--warn)}
+#thread{flex:1;min-height:0;overflow-y:auto;padding:8px 16px 16px;-webkit-overflow-scrolling:touch}
+.it{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0;max-width:720px}
+.it.ok{border-left-color:var(--ok)}.it.warn{border-left-color:var(--warn)}.it.fail{border-left-color:var(--fail)}
+.it.user{background:var(--mine);margin-left:auto;border-left-color:var(--accent)}
+.meta{font-size:12px;color:var(--mute);display:flex;justify-content:space-between;gap:8px}
+.kind{text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.ttl{font-weight:600;margin:2px 0;word-break:break-word}
+.body{white-space:pre-wrap;word-break:break-word;font-size:14px;color:var(--ink);max-height:9.5em;overflow:hidden}
+.body.full{max-height:none}
+.more{background:none;border:0;color:var(--accent);padding:6px 0;font-size:14px;min-height:32px}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.btn{border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:10px;padding:8px 14px;min-height:44px;font-size:15px}
+.btn.alt{background:transparent;color:var(--accent)}
+.btn[disabled]{opacity:.5}
+.state{font-size:14px;color:var(--mute);margin-top:6px}
+#empty{color:var(--mute);padding:24px 0;text-align:center}
+form{display:flex;gap:8px;padding:8px 16px calc(env(safe-area-inset-bottom) + 8px);background:var(--panel);border-top:1px solid var(--line)}
+textarea{flex:1;font:16px/1.3 -apple-system,system-ui,Segoe UI,Roboto,sans-serif;border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--bg);color:var(--ink);resize:none;max-height:30vh}
+#hint{font-size:12px;color:var(--mute);padding:4px 16px 0;background:var(--panel)}
+@media (min-width:900px){
+ main{flex-direction:row}
+ #bots{flex-direction:column;overflow-y:auto;overflow-x:hidden;width:240px;border-right:1px solid var(--line);padding:12px;background:var(--panel)}
+ .bot{text-align:left}
+ #right{flex:1;display:flex;flex-direction:column;min-width:0}
+}
+#right{flex:1;display:flex;flex-direction:column;min-height:0}
+</style>
+</head>
+<body>
+<header>
+  <div class="row">
+    <h1>M Bots</h1>
+    <button class="pill" id="wbtn" type="button" aria-expanded="false">Waiting on you <b id="wn">0</b></button>
+    <a class="pill" id="daylog" href="#">Daylog</a>
+    <span id="failed" class="row"></span>
+  </div>
+</header>
+<section id="waiting" aria-label="Waiting on you"></section>
+<main>
+  <nav id="bots" aria-label="Bots"></nav>
+  <div id="right">
+    <div id="thread" aria-live="polite"></div>
+    <div id="hint"></div>
+    <form id="f" autocomplete="off">
+      <textarea id="t" rows="1" maxlength="2000" placeholder="Message" enterkeyhint="send"></textarea>
+      <button class="btn" id="send" type="submit">Send</button>
+    </form>
+  </div>
+</main>
+<script>
+(function(){
+"use strict";
+var M_ID="m-systems", cur=null, busy=false, lastSig="";
+function $(id){return document.getElementById(id)}
+function el(tag,cls,text){var e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e}
+function api(path,opts){return fetch(path,opts).then(function(r){return r.json().then(function(j){j._status=r.status;return j})})}
+function post(path,obj){return api(path,{method:"POST",headers:{"Content-Type":"application/json","X-M-Bots":"1"},body:JSON.stringify(obj)})}
+
+function copyText(text,btn,label){
+  function done(){var o=btn.textContent;btn.textContent="Copied";setTimeout(function(){btn.textContent=o},1500)}
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(done,fallback)}else fallback();
+  function fallback(){var ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand("copy");done()}catch(e){btn.textContent="Copy failed"}document.body.removeChild(ta)}
+}
+
+function renderBots(list){
+  var nav=$("bots");nav.textContent="";
+  list.forEach(function(b){
+    var btn=el("button","bot");btn.type="button";btn.appendChild(document.createTextNode(b.name));
+    var s=el("small",b.waiting?"hot":"",b.open+" open"+(b.waiting?" · "+b.waiting+" waiting":""));btn.appendChild(s);
+    btn.setAttribute("aria-current",String(b.id===cur));
+    btn.onclick=function(){select(b.id)};nav.appendChild(btn)});
+}
+function renderTop(t){
+  $("wn").textContent=t.waiting.length;
+  var w=$("waiting");w.textContent="";
+  if(!t.waiting.length)w.appendChild(el("div","w","Nothing waiting on you."));
+  t.waiting.forEach(function(x){
+    var d=el("div","w");
+    var label=x.type==="gate"?"Gate":x.type==="escalation"?"Escalation":"Handoff to send";
+    d.appendChild(el("b","",label+": "));d.appendChild(document.createTextNode(x.id+" — "+(x.title||"")));
+    if(x.bot){var a=el("button","more","Open thread");a.type="button";a.onclick=function(){w.classList.remove("open");select(x.bot)};d.appendChild(a)}
+    w.appendChild(d)});
+  var f=$("failed");f.textContent="";
+  t.failed.forEach(function(u){f.appendChild(el("span","pill fail",u.unit))});
+  var dl=$("daylog");dl.href="daylog?date="+encodeURIComponent(t.daylog.date);
+  dl.textContent="Daylog "+t.daylog.date.slice(5)+(t.daylog.exists?"":" (none yet)")+(t.daylog.stale?" (latest)":"");
+}
+function renderItem(it,bot){
+  var c=el("div","it "+(it.kind==="user"?"user ":"")+(it.level||""));
+  var m=el("div","meta");m.appendChild(el("span","kind",it.kind+(it.verdict?" · "+it.verdict:"")));m.appendChild(el("span","",(it.ts||"").slice(5,16)));c.appendChild(m);
+  if(it.title)c.appendChild(el("div","ttl",it.title));
+  if(it.body){var b=el("div","body",it.body);c.appendChild(b);
+    if(it.body.length>260||it.body.split("\n").length>7){var mo=el("button","more","Show more");mo.type="button";mo.onclick=function(){var f=b.classList.toggle("full");mo.textContent=f?"Show less":"Show more"};c.appendChild(mo)}}
+  if(it.copy){var bs=el("div","btns");
+    [["Copy for Claude","For Claude Code (run on the rig, on its own branch):\n\n"],["Copy for Grok","For Grok:\n\n"]].forEach(function(p,i){
+      var b=el("button","btn"+(i?" alt":""),p[0]);b.type="button";b.onclick=function(){copyText(p[1]+it.copy,b)};bs.appendChild(b)});
+    bs.appendChild(el("div","state","Copy only. Nothing is sent from this page."));c.appendChild(bs)}
+  if(it.kind==="suggestion"){
+    if(it.decision){c.appendChild(el("div","state",it.decision==="approve"?"Approved: wrote a proposed card.":"Not now."))}
+    else{var s=el("div","btns");
+      [["Approve","approve"],["Not now","not-now"]].forEach(function(p,i){
+        var b=el("button","btn"+(i?" alt":""),p[0]);b.type="button";b.onclick=function(){
+          s.querySelectorAll("button").forEach(function(x){x.disabled=true});
+          post("api/suggestion/"+encodeURIComponent(it.id)+"/"+p[1],{}).then(function(){load(true)})};s.appendChild(b)});
+      c.appendChild(s);c.appendChild(el("div","state","Approve only writes a proposed card. Nothing runs."))}}
+  return c;
+}
+function renderThread(t,force){
+  var sig=JSON.stringify(t.items.map(function(i){return [i.ts,i.title,i.decision,i.level]}));
+  if(!force&&sig===lastSig)return;lastSig=sig;
+  var box=$("thread");var near=box.scrollHeight-box.scrollTop-box.clientHeight<120;
+  box.textContent="";
+  if(!t.items.length){var em=el("div","","Nothing here yet for "+t.name+".");em.id="empty";box.appendChild(em)}
+  t.items.forEach(function(i){box.appendChild(renderItem(i,t.bot))});
+  if(near||force)box.scrollTop=box.scrollHeight;
+  $("hint").textContent=t.bot===M_ID?"Ask M. It answers on the local model with your notes.":"Goes to M as a proposed card to route. Not sent to "+t.name+".";
+  $("t").placeholder=t.bot===M_ID?"Ask M":"Message for "+t.name;
+}
+function select(id){cur=id;location.hash=id;lastSig="";load(true);api("api/bots").then(function(j){renderBots(j.bots)})}
+function load(force){
+  if(!cur)return;
+  api("api/thread?bot="+encodeURIComponent(cur)).then(function(t){if(t.items)renderThread(t,force)});
+  api("api/top").then(renderTop);
+}
+$("wbtn").onclick=function(){var w=$("waiting");var o=w.classList.toggle("open");$("wbtn").setAttribute("aria-expanded",String(o))};
+$("f").onsubmit=function(e){
+  e.preventDefault();if(busy)return;var v=$("t").value.trim();if(!v)return;
+  busy=true;$("send").disabled=true;$("send").textContent="…";
+  var box=$("thread");box.appendChild(renderItem({kind:"user",title:"You",body:v,ts:"now"}));
+  if(cur===M_ID)box.appendChild(el("div","state","M is thinking on the local model…"));box.scrollTop=box.scrollHeight;
+  $("t").value="";
+  post("api/message",{bot:cur,text:v}).then(function(j){
+    if(!j.ok&&j.error)alert(j.error)}).catch(function(){alert("Could not reach the rig.")}).then(function(){
+    busy=false;$("send").disabled=false;$("send").textContent="Send";load(true)})};
+$("t").addEventListener("input",function(){this.style.height="auto";this.style.height=Math.min(this.scrollHeight,160)+"px"});
+api("api/bots").then(function(j){
+  var want=location.hash.slice(1);var ids=j.bots.map(function(b){return b.id});
+  cur=ids.indexOf(want)>=0?want:M_ID;renderBots(j.bots);load(true)});
+setInterval(function(){if(!document.hidden&&!busy){load(false);api("api/bots").then(function(j){renderBots(j.bots)})}},30000);
+document.addEventListener("visibilitychange",function(){if(!document.hidden)load(false)});
+})();
+</script>
+</body>
+</html>

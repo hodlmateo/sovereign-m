@@ -1,0 +1,15 @@
+# NOT INSTALLED. The operator reviews, then copies it into the operator's systemd --user unit directory.
+# Path below assumes the repo is checked out in the home directory as sovereign-m after merge (UNVERIFIED until then).
+[Unit]
+Description=M sovereign loop: handoffs for needs-code cards, local cards on the local model, local Checker
+# User unit. Never requires or calls sudo. Never pushes, sends or restarts anything.
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/sovereign-m
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/usr/bin/python3 -m sovereign_m.handoff write
+ExecStart=/usr/bin/python3 -m sovereign_m.runner run --max-cards 2
+ExecStart=/usr/bin/python3 -m sovereign_m.botspage suggest
+Nice=10
+TimeoutStartSec=25min
