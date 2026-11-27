@@ -236,6 +236,18 @@ python -m sovereign_m.selftest scan --check privesc
 ```
 
 
+### Security self-check (host audit)
+
+`security-selfcheck/` is a free, zero-dependency, read-only audit for a Linux machine you own. It checks auth logs, user persistence, exposed listeners, firewall/updates, ClamAV/YARA readiness, a honeyfile canary, and backup freshness, then prints a plain-English fix card for every warning. No SaaS, no telemetry, no root required.
+
+```bash
+python3 security-selfcheck/security_selfcheck.py
+python3 security-selfcheck/security_selfcheck.py --purple-test
+python3 security-selfcheck/security_selfcheck.py --json
+```
+
+See `security-selfcheck/README.md` for rules, a daily timer, and how to set a canary.
+
 ## Where the patterns live
 
 - One job and anti-jobs: `data/registry.json`, `sovereign_m/registry/router.py`
@@ -246,6 +258,7 @@ python -m sovereign_m.selftest scan --check privesc
 - The tour: `sovereign_m/prove.py`
 - Commands: `sovereign_m/cli.py`
 - Model guard: `sovereign_m/modelguard/`, `data/modelguard/`, `docs/modelguard.md`
+- Host audit: `security-selfcheck/`
 
 ## Left out on purpose
 

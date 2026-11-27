@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "description": "Default Sigma-inspired host self-check rules. Copy and edit this file, or pass --rules, to customize thresholds and allowlists. Paths below are empty on purpose so a first run stays read-only and portable.",
+  "auth": {
+    "lookback_hours": 24,
+    "failed_burst_threshold": 8,
+    "failed_burst_window_minutes": 10,
+    "alert_on_root_ssh_success": true
+  },
+  "persistence": {
+    "allowlist": []
+  },
+  "listen": {
+    "safe_bind_cidrs": [
+      "<LOOPBACK_V4>",
+      "::1/128",
+      "<MESH_VPN_V4>"
+    ],
+    "safe_bind_notes": {
+      "<LOOPBACK_V4>": "loopback",
+      "::1/128": "IPv6 loopback",
+      "<MESH_VPN_V4>": "<<TAILNET_NAME>_NAME> / Carrier-Grade NAT range (typical mesh VPN bind)"
+    },
+    "exposed_ports_allowlist": [],
+    "include_udp": true
+  },
+  "updates": {
+    "warn_if_security_updates": true
+  },
+  "antivirus": {
+    "clamav_db_max_age_days": 7,
+    "clamav_db_dirs": [
+      "/var/lib/clamav",
+      "/var/lib/clamav-freshclam"
+    ]
+  },
+  "canary": {
+    "path": "",
+    "expected_sha256": "",
+    "alert_if_accessed_within_hours": 0
+  },
+  "backup": {
+    "path": "",
+    "max_age_hours": 48,
+    "marker_names": [
+      "LAST_BACKUP",
+      ".backup-ok",
+      "backup.stamp"
+    ]
+  }
+}
