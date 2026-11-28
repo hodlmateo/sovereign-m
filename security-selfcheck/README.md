@@ -10,7 +10,7 @@ This module lives in [hodlmateo/sovereign-m](https://github.com/hodlmateo/sovere
 
 1. **Auth / SSH log rules (Sigma-inspired)** — looks for failed-login bursts and unexpected root SSH successes in readable auth logs or `journalctl`. If the log needs root, the check is skipped with a note — that is normal on many desktops.
 2. **Persistence** — lists your user crontab and user systemd units/timers (`<HOME>/.config/systemd/user`) so an entry you did not install jumps out. Fill in `persistence.allowlist` later to flag anything new.
-3. **Listening ports & exposure** — uses `ss` (or `/proc/net`) and flags listeners bound beyond loopback or a mesh-VPN range (`<MESH_VPN_V4>`, the usual <<TAILNET_NAME>_NAME> range). Expected ports go on `listen.exposed_ports_allowlist`.
+3. **Listening ports & exposure** — uses `ss` (or `/proc/net`) and flags listeners bound beyond loopback or a mesh-VPN range (`<MESH_VPN_V4>`, the carrier-grade NAT block that mesh VPNs usually bind in). Expected ports go on `listen.exposed_ports_allowlist`.
 4. **Firewall & updates** — checks whether `ufw` is active (gracefully handles non-root) and whether security updates are waiting (`apt` / update-notifier).
 5. **Antivirus & YARA readiness** — checks that `clamscan` / `freshclam` (and optional `yara`) are installed, and that the ClamAV signature database is fresh.
 6. **Honeyfile canary** — verifies a decoy file you never open (`--canary` or `canary.path` + `canary.expected_sha256`). A hash change raises **ALERT**.
@@ -49,8 +49,8 @@ Copy `rules/default_rules.json` and pass `--rules`. The defaults are conservativ
 
 - Failed-login burst: 8 failures in 10 minutes, 24-hour lookback.
 - Root SSH success is flagged.
-- Loopback (`<LOOPBACK_V4>`, `::1/128`) and mesh-VPN / CGNAT (`<MESH_VPN_V4>`) binds are treated as safe.
-- `exposed_ports_allowlist` starts empty, so a service on `<WILDCARD_V4>` is a warning until you allow it.
+- Loopback (`<LOOPBACK_V4>`, `::1/128`) and mesh-VPN / CGNAT (`<MESH_VPN_V4>`) binds are treated as safe. These two tokens are aliases for the usual IPv4 loopback and CGNAT blocks; a rules file may use them or a literal CIDR.
+- `exposed_ports_allowlist` starts empty, so a service bound to the wildcard address (all interfaces) is a warning until you allow it.
 - ClamAV signatures are stale after 7 days.
 - Canary and backup paths start empty so a first run stays portable; set them when you are ready.
 

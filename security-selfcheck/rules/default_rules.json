@@ -19,7 +19,7 @@
     "safe_bind_notes": {
       "<LOOPBACK_V4>": "loopback",
       "::1/128": "IPv6 loopback",
-      "<MESH_VPN_V4>": "<<TAILNET_NAME>_NAME> / Carrier-Grade NAT range (typical mesh VPN bind)"
+      "<MESH_VPN_V4>": "Carrier-Grade NAT range (typical mesh VPN bind)"
     },
     "exposed_ports_allowlist": [],
     "include_udp": true

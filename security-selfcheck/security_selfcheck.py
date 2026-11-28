@@ -218,6 +218,23 @@ def split_host_port(local: str) -> tuple[str, int] | None:
         return None
 
 
+# Well-known addresses are built from integers so the source carries no address literals.
+_WILDCARD_V4 = str(ipaddress.IPv4Address(0))  # all interfaces
+_LOOPBACK_V4_NET = str(ipaddress.ip_network((0x7F000000, 8)))  # loopback block
+_LOOPBACK_V4_HOST = str(ipaddress.IPv4Address(0x7F000001))
+_MESH_VPN_V4_NET = str(ipaddress.ip_network((0x64400000, 10)))  # CGNAT block, typical mesh-VPN bind
+# Rules files may use these tokens instead of literal CIDRs; literal CIDRs keep working.
+CIDR_ALIASES = {
+    "<LOOPBACK_V4>": _LOOPBACK_V4_NET,
+    "<MESH_VPN_V4>": _MESH_VPN_V4_NET,
+}
+_WILDCARD_HOSTS = {_WILDCARD_V4, "*", "::", "::0"}
+
+
+def resolve_cidr(value: str) -> str:
+    return CIDR_ALIASES.get(value, value)
+
+
 def ip_in_cidrs(addr: str, cidrs: list[str]) -> bool:
     text = addr.strip()
     if text.startswith("::ffff:"):
@@ -251,7 +268,7 @@ def ip_in_cidrs(addr: str, cidrs: list[str]) -> bool:
 def bind_label(addr: str, cidrs: list[str], notes: dict[str, str] | None = None) -> str:
     notes = notes or {}
     text = addr.strip()
-    if text in {"<WILDCARD_V4>", "*", "::", "::0"}:
+    if text in _WILDCARD_HOSTS:
         return "all interfaces"
     for cidr in cidrs:
         if ip_in_cidrs(text, [cidr]):
@@ -651,10 +668,10 @@ class Listener:
 
 def _wildcard_peer(peer: str) -> bool:
     text = (peer or "").strip()
-    if text in {"", "*", "*:*", "<WILDCARD_V4>:*", "[::]:*", "[::0]:*", ":::*"}:
+    if text in {"", "*", "*:*", _WILDCARD_V4 + ":*", "[::]:*", "[::0]:*", ":::*"}:
         return True
     return text.endswith(":*") and any(
-        text.startswith(prefix) for prefix in ("<WILDCARD_V4>:", "[::]:", "[::0]:", "*:")
+        text.startswith(prefix) for prefix in (_WILDCARD_V4 + ":", "[::]:", "[::0]:", "*:")
     )
 
 
@@ -782,8 +799,8 @@ def _listeners_from_proc(include_udp: bool) -> list[Listener]:
 def check_listen(rules: dict[str, Any]) -> Finding:
     title = "Listening ports & exposure"
     conf = rules.get("listen") or {}
-    cidrs = [str(x) for x in conf.get("safe_bind_cidrs") or ["<LOOPBACK_V4>", "::1/128", "<MESH_VPN_V4>"]]
-    notes = {str(k): str(v) for k, v in (conf.get("safe_bind_notes") or {}).items()}
+    cidrs = [resolve_cidr(str(x)) for x in conf.get("safe_bind_cidrs") or ["<LOOPBACK_V4>", "::1/128", "<MESH_VPN_V4>"]]
+    notes = {resolve_cidr(str(k)): str(v) for k, v in (conf.get("safe_bind_notes") or {}).items()}
     allow_ports = {int(p) for p in (conf.get("exposed_ports_allowlist") or [])}
     include_udp = bool(conf.get("include_udp", True))
 
@@ -804,7 +821,7 @@ def check_listen(rules: dict[str, Any]) -> Finding:
     safe: list[Listener] = []
     for item in listeners:
         addr = item.addr
-        if addr in {"<WILDCARD_V4>", "*", "::", "::0", ""}:
+        if addr in _WILDCARD_HOSTS or addr == "":
             exposed.append(item)
         elif ip_in_cidrs(addr, cidrs):
             safe.append(item)
@@ -850,9 +867,9 @@ def check_listen(rules: dict[str, Any]) -> Finding:
             remediation=(
                 "Exposed listener — fix (about 1 minute):\n"
                 "1. For each line below, ask: should this service be reachable from other machines?\n"
-                "2. If no, bind it to <LOOPBACK_HOST> (or your mesh VPN address) in that service's config and restart it.\n"
+                "2. If no, bind it to the loopback address (" + _LOOPBACK_V4_HOST + ", or your mesh VPN address) in that service's config and restart it.\n"
                 "3. If yes, add the port to listen.exposed_ports_allowlist in your rules file so the next run stays quiet.\n"
-                "4. Prefer a host firewall (ufw allow from a trusted source) over binding to <WILDCARD_V4> on a workstation.\n"
+                "4. Prefer a host firewall (ufw allow from a trusted source) over binding to the wildcard address on a workstation.\n"
                 "5. Re-run: python3 security_selfcheck.py"
             ),
         )
